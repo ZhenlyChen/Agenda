@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content="#f8f8f8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agenda</title>
+
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="agenda.ico">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="js/agenda.js"></script>
+  <style type="text/css">
+    body {
+      padding-top: 70px;
+      background-color: #EEEEEE;
+    }
+  </style>
+  <script type="text/javascript">
+   $(function() {
+    loadBar("#123");
+  });//处理标题栏
+  </script>
+</head>
+<body>
+ <!-- 标题栏开始 -->
+
+ <div id="nav-bar"></div>
+  <br>
+ <!--标题栏结束 -->
+ <div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="jumbotron col-md-10  col-md-offset-1" style="background: #F8F8F8;">
+       <div class="container">
+         <h1>404 NOT FOUND</h1><br>
+
+         <h3>你要访问的页面并不在地球上</h3><br>
+         <p>3秒后返回首页...</p><br>
+          <a class="btn btn-success btn-lg" href="/index.html">返回首页</a>
+         <script type="text/javascript">setTimeout(function () {
+           window.location.href = "/index.html";
+         },3000)</script>
+       </div>
+     </div>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>
