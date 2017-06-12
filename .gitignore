@@ -1,2 +1,5 @@
 server/config
 server/node_modules
+C++/bin
+C++/build
+C++/data
