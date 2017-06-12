@@ -12,14 +12,14 @@ class AgendaUI {
   void quitAgenda(void);
  private:
   enum textColor{
-    BLACK, RED, GREEN, YELLOW, 
+    BLACK, RED, GREEN, YELLOW,
     BLUE, PURPLE,DGREEN, WHITE
   };
-  
+
   enum helpText{MAIN, LOGIN};
-  
+
   enum lineClass{TEXT, LINE};
-  
+
   enum windowsInfo{ROW, COL};
 
   void OperationLoop(void);
@@ -31,19 +31,19 @@ class AgendaUI {
   int getWindowInfo(windowsInfo);
 
   std::string drawLine(lineClass, std::string str = "");
-  
+
   int getAnyinput(void);
-  
+
   void prinfTextByColor(textColor,std::string);
-  
+
   void prinfHelpText(helpText);
-  
+
   std::string getOperation();
 
   std::string getOperationWithout();
-  
+
   bool executeOperation(const std::string &t_operation);
-  
+
   bool userLogIn(void);
 
   void userRegister(void);

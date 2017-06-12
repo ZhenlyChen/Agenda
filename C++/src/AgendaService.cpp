@@ -110,12 +110,12 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
   if (m_storage->queryUser
     ([&userName](const User &u)->bool {return (u.getName() == userName);}).empty()) {
     return false;  // user isn't exist
-  } 
-  
+  }
+
   std::list<Meeting> tmp = m_storage->queryMeeting([&title](const Meeting &meeting)->bool {
     return (meeting.getTitle() == title);
   });
-  if (!tmp.empty()) { 
+  if (!tmp.empty()) {
     return false;  // std::cout << "[create meeting] had exist this meeting"<< std::endl;
   }
 
@@ -131,18 +131,18 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
     for (auto manhad : hadpartman) {
       if (manhad == manall) flag = 1;
     }
-    if (flag) { 
+    if (flag) {
       return false;  // std::cout << "[create meeting] The participator had exist."<< std::endl;
     }
     hadpartman.push_back(manall);
   }
 
-  std::list<Meeting> aboutme = 
+  std::list<Meeting> aboutme =
     m_storage->queryMeeting([&userName, &m_startDate, &m_endDate](const Meeting &meeting)->bool {
     if ((meeting.getSponsor() != userName) && !meeting.isParticipator(userName)) return false;
     return !(meeting.getStartDate() >= m_endDate || meeting.getEndDate() <= m_startDate);
   });
-  if (!aboutme.empty()) { 
+  if (!aboutme.empty()) {
     return false;  // std::cout << "[create meeting] sponsor has other meeting"<< std::endl;
   }
 
@@ -150,18 +150,18 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
     std::list<User> actor = m_storage->queryUser([&name](const User &other)->bool {
       return (other.getName() == name);
     });
-    if (userName == name) { 
-      return false;  // std::cout << "[create meeting] the sponsor in the participator"<< std::endl; 
+    if (userName == name) {
+      return false;  // std::cout << "[create meeting] the sponsor in the participator"<< std::endl;
     }
-    if (actor.empty()) { 
-      return false;  // std::cout << "[create meeting] no this participator " << name << std::endl;  
+    if (actor.empty()) {
+      return false;  // std::cout << "[create meeting] no this participator " << name << std::endl;
     }
     std::list<Meeting> aboutother = m_storage->queryMeeting([&name, &m_startDate, &m_endDate](const Meeting &meeting)->bool {
       if ((meeting.getSponsor() != name) && !meeting.isParticipator(name)) return false;
       return !(meeting.getStartDate() >= m_endDate || meeting.getEndDate() <= m_startDate);
     });
-    if (!aboutother.empty()) { 
-      return false;  // std::cout << "[create meeting] particiator has other meeting" << std::endl; 
+    if (!aboutother.empty()) {
+      return false;  // std::cout << "[create meeting] particiator has other meeting" << std::endl;
     }
   }
   m_storage->createMeeting(Meeting(userName, participator, m_startDate, m_endDate, title));
@@ -224,7 +224,7 @@ bool AgendaService::removeMeetingParticipator(const std::string &userName,
     return false;  // no this userName
   }
 
-  int delNum = 
+  int delNum =
     m_storage->updateMeeting([&userName, &title, &participator](const Meeting &meeting)->bool {
     if ((meeting.getSponsor() != userName) || (meeting.getTitle() != title)) return false;  // this user not sponsor
     return meeting.isParticipator(participator);
@@ -248,7 +248,7 @@ bool AgendaService::quitMeeting(const std::string &userName, const std::string &
     ([&userName](const User &u)->bool {return (u.getName() == userName);}).empty()) {
     return false;  // no this userName
   }
-  
+
   int delNum = m_storage->updateMeeting([&userName, &title](const Meeting &meeting)->bool {
     return (meeting.getTitle() == title) && meeting.isParticipator(userName);
   },[&userName](Meeting &meeting) {

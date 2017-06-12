@@ -116,7 +116,6 @@ void AgendaUI::OperationLoop(void){
       prinfHelpText(helpText(MAIN));
     } else {
       prinfTextByColor(textColor(RED), "Invalid command.\n");
-      cout << "What do you need?" << endl << "h  - list all action.";
     }
     op = "end";
     prinfTextByColor(textColor(BLUE), "\nAgenda");
@@ -164,7 +163,7 @@ void AgendaUI::prinfHelpText(helpText where){
 void AgendaUI::startAgenda(void){
   m_agendaService.startAgenda();
   string op = "start";
-  printf("\n\033[2J\033[%d;0H",getWindowInfo(windowsInfo(ROW)) / 2 - 4); 
+  printf("\n\033[2J\033[%d;0H",getWindowInfo(windowsInfo(ROW)) / 2 - 4);
   while( op == "start" ||((op = getOperation()) != "q" && op != "Q")){
     // cout << "\n**" << op << "**\n";
     if(op == "r"){
@@ -182,7 +181,6 @@ void AgendaUI::startAgenda(void){
       prinfHelpText(helpText(LOGIN));
     } else {
       prinfTextByColor(textColor(RED), "Invalid command.\n");
-      cout << "What do you need?" << endl << "h  - list all action.";
     }
     if(op != " "){
       prinfTextByColor(textColor(BLUE),"\nAgenda");
@@ -509,7 +507,7 @@ void AgendaUI::deleteAllMeetings(void){
  * show the meetings in the screen
  */
 void AgendaUI::printMeetings(const std::list<Meeting> &t_meetings, string title){
-  
+
   if(t_meetings.empty()){
     cout << endl << drawLine(lineClass(LINE));
     string tmp;
@@ -528,7 +526,7 @@ void AgendaUI::printMeetings(const std::list<Meeting> &t_meetings, string title)
     printf("\033[0m\n");
   }
   for (auto meeting : t_meetings) {
-    printf("%-12s%-12s%-20s%-20s", 
+    printf("%-12s%-12s%-20s%-20s",
       meeting.getTitle().c_str(), meeting.getSponsor().c_str(),
       Date::dateToString(meeting.getStartDate()).c_str(),
       Date::dateToString(meeting.getEndDate()).c_str());

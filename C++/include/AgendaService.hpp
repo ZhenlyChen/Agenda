@@ -13,7 +13,7 @@ class AgendaService {
   ~AgendaService();
 
   bool userLogIn(const std::string &userName, const std::string &password);
-  
+
   bool userRegister(const std::string &userName, const std::string &password,
                     const std::string &email, const std::string &phone);
 
