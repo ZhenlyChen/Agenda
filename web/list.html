@@ -22,6 +22,7 @@
         body {
             padding-top: 70px;
             background-color: #EEEEEE;
+            min-width: 540px;
         }
     </style>
 </head>
@@ -35,20 +36,30 @@
         <!-- Tab panes -->
         <div class="col-md-2">
             <div class="panel panel-default">
-                <div class="panel-heading">操作面板</div>
-                <div class="panel-body">
-                    <a class="btn btn-success btn-block" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="addMeeting()">发起会议</a>
+                <div class="panel-heading">
+                    <p style="font-size: 20px;padding-top: 20px;text-align: center;"><img src="pic/manbig.png">
+                        <p id="userName" style="font-size: 20px;text-align: center;">Hi, MagaShow</p>
+                    </p>
                 </div>
-                <div id="time" class="panel-footer">Panel footer</div>
+                <div class="panel-body" style="padding: 10px;">
+                    <p style="font-size: 18px;text-align: center;">Welcome to Agenda.</p>
+                    <a class="btn btn-success btn-block" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="addMeeting()">发起会议</a>
+                    <a class="btn btn-primary btn-block" href="user.html">修改个人信息</a>
+                    <a class="btn btn-warning btn-block" href="/api/layout">退出登陆</a>
+                    <div style="font-size: 13px;text-align: center;padding-top: 23px" id="time">Panel footer</div>
+                </div>
+
             </div>
+
+
         </div>
         <div class="col-md-10">
 
             <div class="panel panel-default">
                 <div class="panel-heading">发起的会议</div>
                 <div class="panel-body">
-                    <table id="mylistTable" class="table table-hover table-striped">
-                        <tr style="font-size:17px;color:#fff;background-color: #00B0AD">
+                    <table id="mylistTable" class="table table-hover">
+                        <tr style="font-size:17px;color:#fff;background-color: #009999">
                             <th>会议</th>
                             <th>主持人</th>
                             <th>起始时间</th>
@@ -56,7 +67,7 @@
                             <th>参与者</th>
                             <th>操作</th>
                         </tr>
-                        <tr v-for="(meeting, index) in meetings" :id="'list1_' + index">
+                        <tr v-for="(meeting, index) in meetings" style="font-size:15px;" :class="meeting.class">
                             <td>{{meeting.name}}</td>
                             <td>{{meeting.sponsor}}</td>
                             <td>{{meeting.startDate}}</td>
@@ -66,15 +77,17 @@
                                 <a data-toggle="modal" data-target=".bs-example-modal-sm" :value="meeting.mid" onclick="dealModel(this)" title="删除议程"><span class="glyphicon glyphicon-trash"></span></a></td>
                         </tr>
                     </table>
-                    <div id="nothingS" class="alert alert-warning" role="alert">你还没有发起任何会议</div>
+                    <div id="nothingS">
+
+                    </div>
                 </div>
             </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">参与的会议</div>
                 <div class="panel-body">
-                    <table id="takelistTable" class="table table-hover table-striped">
-                        <tr style="font-size:17px;color:#fff;background-color: #00B0AD">
+                    <table id="takelistTable" class="table table-hover">
+                        <tr style="font-size:17px;color:#fff;background-color: #009999">
                             <th>会议</th>
                             <th>主持人</th>
                             <th>起始时间</th>
@@ -82,7 +95,7 @@
                             <th>参与者</th>
                             <th>操作</th>
                         </tr>
-                        <tr v-for="(meeting, index) in meetings">
+                        <tr v-for="(meeting, index) in meetings" style="font-size:15px;" :class="meeting.class">
                             <td>{{meeting.name}}</td>
                             <td>{{meeting.sponsor}}</td>
                             <td>{{meeting.startDate}}</td>
@@ -92,10 +105,10 @@
                         </tr>
 
                     </table>
-                    <div id="nothingP" class="alert alert-warning" role="alert">当前没有参与的会议</div>
+                    <div id="nothingP">
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -220,6 +233,7 @@
             } else if (cook_isMail == '0' || cook_isMail == undefined || cook_isMail == "") {
                 window.location.href = 'mail.html';
             }
+            $('#userName').html('Hi, ' + getCookie("name"));
             getList();
         }); //处理标题栏
         var userList = new Vue({

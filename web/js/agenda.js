@@ -1,7 +1,42 @@
 // SHA1加密模块
 var hexcase = 0;
 var chrsz = 8;
+//日期格式化
+Date.prototype.Format = function(fmt) {
+  var o = {
+    'M+': this.getMonth() + 1, //月份
+    'd+': this.getDate(), //日
+    'h+': this.getHours(), //小时
+    'm+': this.getMinutes(), //分
+    's+': this.getSeconds(), //秒
+    'q+': Math.floor((this.getMonth() + 3) / 3), //季度
+    'S': this.getMilliseconds() //毫秒
+  };
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(
+      RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+  }
+  for (var k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(
+        RegExp.$1,
+        (RegExp.$1.length == 1) ? (o[k]) :
+        (('00' + o[k]).substr(('' + o[k]).length)));
+    }
+  }
+  return fmt;
+};
 
+function comptime(beginTime, endTime) {
+  var beginTimes = beginTime.substring(0, 10).split('-');
+  var endTimes = endTime.substring(0, 10).split('-');
+  beginTime = beginTimes[1] + '-' + beginTimes[2] + '-' + beginTimes[0] +
+    ' ' + beginTime.substring(10, 19);
+  endTime = endTimes[1] + '-' + endTimes[2] + '-' + endTimes[0] + ' ' +
+    endTime.substring(10, 19);
+  var a = (Date.parse(endTime) - Date.parse(beginTime)) / 3600 / 1000;
+  return a;
+}; //进行时间比较
 function hex_sha1(s) {
   return binb2hex(core_sha1(str2binb(s), s.length * chrsz));
 }
@@ -353,10 +388,10 @@ function getCode() { //获取验证码
 }
 
 function getList() {
-  $('#mylistTable').hide();
-  $('#takelistTable').hide();
-  $('#nothingS').hide();
-  $('#nothingP').hide();
+  //$('#mylistTable').hide();
+  //$('#takelistTable').hide();
+  //$('#nothingS').hide();
+  //$('#nothingP').hide();
   $.post('api/getList', {}, (data) => {
     if (data.state == 'failed') {
       window.location.href = 'index.html?op=0';
@@ -368,14 +403,43 @@ function getList() {
       $('#mylistTable').show();
       $('#nothingS').hide();
     } else {
+      $('#mylistTable').hide();
       $('#nothingS').show();
+      $('#nothingS').html('<div class="alert alert-warning alert-dismissible" role="alert">你还没有发起任何会议</div>');
     }
 
     if (list2.meetings.length != 0) {
       $('#takelistTable').show();
       $('#nothingP').hide();
     } else {
+      $('#takelistTable').hide();
       $('#nothingP').show();
+      $('#nothingP').html('<div class="alert alert-warning alert-dismissible" role="alert">当前没有参与的会议</div>');
+    }
+
+    for (i in list.meetings) {
+      list.meetings[i].class = 'default';
+      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].endDate) <= 0) {
+        list.meetings[i].class = 'success';
+        list.meetings[i].name += ' (已完成)';
+      }
+      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].startDate) <= 0 &&
+        comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].endDate) >= 0) {
+        list.meetings[i].class = 'warning';
+        list.meetings[i].name += ' (进行中)';
+      }
+    }
+    for (i in list2.meetings) {
+      list2.meetings[i].class = 'default';
+      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].endDate) <= 0) {
+        list2.meetings[i].class = 'success';
+        list2.meetings[i].name += ' (已完成)';
+      }
+      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].startDate) <= 0 &&
+        comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].endDate) >= 0) {
+        list2.meetings[i].class = 'warning';
+        list2.meetings[i].name += ' (进行中)';
+      }
     }
   });
 }
@@ -447,6 +511,7 @@ function delMeeting(e) {
 
 function outMeeting(e) {
   $.post('api/quitMeeting', { mid: e.getAttribute('value') }, (data) => {
+    $('#sureQuit').modal('hide');
     getList();
   });
 }

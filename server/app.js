@@ -396,6 +396,7 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => {
       // 参与者日期检测重叠 TODO
       var actorsList = vals[i].actors.split(',');
       var actorsIn = req.body.actors.split(',');
+      actorsIn.push(res.locals.userName);
       for (ai in actorsIn) {
         for (al in actorsList) {
           if (actorsList[al] == actorsIn[ai] && req.body.mid != vals[i].mid) { // 这个参与者在这个会议里面
