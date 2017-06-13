@@ -64,7 +64,7 @@ bool AgendaService::deleteUser(const std::string &userName, const std::string &p
     return (u.getName() == userName) && (u.getPassword() == password);
   }).empty()) {
     return false;  // user isn't exist
-  } 
+  }
 
   deleteAllMeetings(userName);  // delete all meeting which user for sponsor
 

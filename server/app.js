@@ -345,6 +345,7 @@ app.get('/layout', (req, res, next) => { //清空cookies
 //获取会议,用户列表
 // todo
 app.post('/getList', [userModule.appUserVerif], (req, res, next) => {
+  console.log('Get Meeting List Success!');
   var sqlCmd = 'SELECT `name` FROM `user` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
     var userList = new Array;
@@ -365,6 +366,7 @@ app.post('/getList', [userModule.appUserVerif], (req, res, next) => {
 //------------------------------------------------------------------------------
 // 增加，修改会议内容
 app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => {
+  console.log('Edit Meeting');
   var sqlCmd = 'SELECT * FROM `meeting` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
     for (i in vals) {
@@ -432,6 +434,7 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => {
 // todo
 app.post('/delMeeting', [userModule.appUserVerif], (req, res, next) => {
   // 会议归属者检测 TODO NOT MUST
+  console.log('Delete meeting success!');
   var sqlCmd = 'DELETE FROM `meeting` WHERE `mid`=' + req.body.mid;
   sqlModule.query(sqlCmd, (vals, isNull) => {
     userModule.makeASign(req, res, () => {
@@ -445,6 +448,7 @@ app.post('/delMeeting', [userModule.appUserVerif], (req, res, next) => {
 // todo
 app.post('/quitMeeting', [userModule.appUserVerif], (req, res, next) => {
   // 参与者是否存在检测 TODO NOT MUST
+  console.log('Quit meeting success!');
   var sqlCmd = 'SELECT `actors` FROM `meeting` WHERE `mid`=' + req.body.mid;
   sqlModule.query(sqlCmd, (vals, isNull) => {
     var actors = vals[0].actors.split(',');

@@ -1,133 +1,126 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="theme-color" content="#f8f8f8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agenda</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#f8f8f8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agenda</title>
 
-  <!-- Bootstrap -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="shortcut icon" href="agenda.ico">
-  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="js/agenda.js"></script>
-  <style type="text/css">
-    body {
-      padding-top: 70px;
-      background-color: #EEEEEE;
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="agenda.ico">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/agenda.js"></script>
+    <style type="text/css">
+        body {
+            padding-top: 70px;
+            background-color: #EEEEEE;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function() {
+            loadBar("#t-user");
+            var isLogin = getCookie("isLogin");
+            var cook_isMail = getCookie("tureEmail");
+            if (isLogin == 0 || isLogin == '' || isLogin == undefined) {
+                window.location.href = 'index.html?op=1';
+            } else if (cook_isMail == '0' || cook_isMail == undefined || cook_isMail == "") {
+                window.location.href = 'mail.html';
+            }
+            var cook_detail = getCookie("detail");
+            var cook_name = getCookie("name");
+            var cook_web = getCookie("web");
+            var cook_userEmail = getCookie("userEmail");
 
-    }
-  </style>
-  <script type="text/javascript">
-   $(function() {
-    loadBar("#t-user");
-    var isLogin = getCookie("isLogin");
-    var cook_isMail = getCookie("tureEmail");
-    if (isLogin == 0 || isLogin == ''|| isLogin == undefined){
-      window.location.href='index.html?op=1';
-    }else if (cook_isMail == '0' || cook_isMail == undefined || cook_isMail == ""){
-      window.location.href='mail.html';
-    }
-    var cook_detail = getCookie("detail");
-    var cook_name= getCookie("name");
-    var cook_web = getCookie("web");
-    var cook_userEmail = getCookie("userEmail");
-
-    document.getElementById('user_name').innerHTML=cook_name;
-    $("#user_tname").val(cook_name);
-    $("#user_detail").val(cook_detail);
-    $("#user_web").val(cook_web);
-    document.getElementById('user_email').placeholder=cook_userEmail;
+            document.getElementById('user_name').innerHTML = cook_name;
+            $("#user_detail").val(cook_detail);
+            $("#user_web").val(cook_web);
+            document.getElementById('user_email').placeholder = cook_userEmail;
 
 
-    });//处理标题栏
-
-</script>
+        }); //处理标题栏
+    </script>
 </head>
+
 <body>
- <!-- 标题栏开始 -->
+    <!-- 标题栏开始 -->
 
- <div id="nav-bar"></div>
-  <br>
- <!--标题栏结束 -->
- <div class="container-fluid">
-  <div class="row-fluid">
-    <div class="col-md-8 col-md-offset-2">
-     <div class="page-header">
-       <h1>用户中心 <small> User center</small></h1>
-     </div>
-     <div class="panel-body" style="font-size: 25px;">
-      Hello, <strong id="user_name"></strong>
+    <div id="nav-bar"></div>
+    <br>
+    <!--标题栏结束 -->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="page-header">
+                    <h1>用户中心 <small> User center</small></h1>
+                </div>
+                <div class="panel-body" style="font-size: 25px;">
+                    Hello, <strong id="user_name"></strong>
+                </div>
+                <div id="notice"></div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">邮箱</span>
+                        <input id="user_email" class="form-control" type="text" placeholder="NULL" readonly>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">个人信息</span>
+                        <input id="user_detail" class="form-control" type="text" placeholder="NULL">
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">个人主页</span>
+                        <input id="user_web" class="form-control" type="text" placeholder="NULL">
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-2 col-md-offset-8">
+                    <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target=".bs-example-modal-lg">修改密码</button>
+                    <div id="cPwd" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="gridSystemModalLabel">修改密码</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="notice2"></div>
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="old_password" class="control-label">原密码:</label>
+                                            <input type="password" class="form-control" id="old_password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new_password" class="control-label">新密码:</label>
+                                            <input type="password" class="form-control" id="new_password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new_password2" class="control-label">再输入一次新密码:</label>
+                                            <input type="password" class="form-control" id="new_password2">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-primary" onclick="toCpwd()">确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"><button class="btn btn-success btn-block" onclick="toCinfo()">修改信息</button></div>
+
+            </div>
+        </div>
     </div>
-    <div id="notice"></div>
-    <div class="panel-body">
-      <div class="input-group">
-       <span class="input-group-addon">邮箱</span>
-       <input id="user_email" class="form-control" type="text" placeholder="NULL" readonly>
-     </div>
-   </div>
-   <div class="panel-body">
-    <div class="input-group">
-     <span class="input-group-addon">昵称</span>
-     <input id="user_tname" class="form-control" type="text" placeholder="NULL">
-   </div>
- </div>
- <div class="panel-body">
-  <div class="input-group">
-   <span class="input-group-addon">个人信息</span>
-   <input id="user_detail" class="form-control" type="text" placeholder="NULL">
- </div>
-</div>
-<div class="panel-body">
-  <div class="input-group">
-   <span class="input-group-addon">个人主页</span>
-   <input id="user_web" class="form-control" type="text" placeholder="NULL">
- </div>
-</div>
-
-
-
-<div class="col-md-2 col-md-offset-8">
-  <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target=".bs-example-modal-lg">修改密码</button>
-  <div id="cPwd" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="gridSystemModalLabel">修改密码</h4>
-        </div>
-        <div class="modal-body">
-          <div id="notice2"></div>
-          <form>
-            <div class="form-group">
-              <label for="old_password" class="control-label">原密码:</label>
-              <input type="password" class="form-control" id="old_password">
-            </div>
-            <div class="form-group">
-              <label for="new_password" class="control-label">新密码:</label>
-              <input type="password" class="form-control" id="new_password">
-            </div>
-            <div class="form-group">
-              <label for="new_password2" class="control-label">再输入一次新密码:</label>
-              <input type="password" class="form-control" id="new_password2">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary" onclick="toCpwd()">确定</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-md-2"><button class="btn btn-success btn-block" onclick="toCinfo()">修改信息</button></div>
-
-</div>
-</div>
-</div>
 </body>
 
 

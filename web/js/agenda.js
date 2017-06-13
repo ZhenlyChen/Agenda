@@ -353,10 +353,30 @@ function getCode() { //获取验证码
 }
 
 function getList() {
+  $('#mylistTable').hide();
+  $('#takelistTable').hide();
+  $('#nothingS').hide();
+  $('#nothingP').hide();
   $.post('api/getList', {}, (data) => {
+    if (data.state == 'failed') {
+      window.location.href = 'index.html?op=0';
+    }
     list.meetings = data.listOfSponsor;
     list2.meetings = data.listOfParticipate;
     userList.users = data.users;
+    if (list.meetings.length != 0) {
+      $('#mylistTable').show();
+      $('#nothingS').hide();
+    } else {
+      $('#nothingS').show();
+    }
+
+    if (list2.meetings.length != 0) {
+      $('#takelistTable').show();
+      $('#nothingP').hide();
+    } else {
+      $('#nothingP').show();
+    }
   });
 }
 
@@ -420,6 +440,7 @@ function dealMeeting(e) {
 
 function delMeeting(e) {
   $.post('api/delMeeting', { mid: e.getAttribute('value') }, (data) => {
+    $('#sureDel').modal('hide');
     getList();
   });
 }
@@ -430,8 +451,9 @@ function outMeeting(e) {
   });
 }
 
-function cleanAdd() {
-  document.getElementById('gridSystemModalLabel').innerHTML = '增加议程';
+function addMeeting() {
+  $('#Alert_').alert('close');
+  document.getElementById('gridSystemModalLabel').innerHTML = '发起会议';
   document.getElementById('sendMeeting').value = 'editMeeting';
   document.getElementById('sendMeeting').setAttribute('data-mid', 0);
   document.getElementById('meetName').value = '';
@@ -444,7 +466,8 @@ function cleanAdd() {
 }
 
 function editMeeting(e) {
-  document.getElementById('gridSystemModalLabel').innerHTML = '编辑议程';
+  $('#Alert_').alert('close');
+  document.getElementById('gridSystemModalLabel').innerHTML = '编辑会议';
   document.getElementById('sendMeeting').value = 'editMeeting';
   document.getElementById('sendMeeting').setAttribute('data-mid', e.getAttribute('value'));
   var mid = e.getAttribute('value');
@@ -466,4 +489,12 @@ function editMeeting(e) {
       }
     }
   }
+}
+
+function dealModel(e) {
+  document.getElementById('deleteIt').value = e.getAttribute('value');
+}
+
+function quitModel(e) {
+  document.getElementById('quitIt').value = e.getAttribute('value');
 }

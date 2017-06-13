@@ -37,7 +37,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">操作面板</div>
                 <div class="panel-body">
-                    <a class="btn btn-success btn-block" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="cleanAdd()">增加议程</a>
+                    <a class="btn btn-success btn-block" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="addMeeting()">发起会议</a>
                 </div>
                 <div id="time" class="panel-footer">Panel footer</div>
             </div>
@@ -45,7 +45,7 @@
         <div class="col-md-10">
 
             <div class="panel panel-default">
-                <div class="panel-heading">发起的议程</div>
+                <div class="panel-heading">发起的会议</div>
                 <div class="panel-body">
                     <table id="mylistTable" class="table table-hover table-striped">
                         <tr style="font-size:17px;color:#fff;background-color: #00B0AD">
@@ -63,14 +63,15 @@
                             <td>{{meeting.endDate}}</td>
                             <td>{{meeting.actors}}</td>
                             <td><a data-toggle="modal" data-target=".bs-example-modal-lg" onclick="editMeeting(this)" title="编辑议程" :value="meeting.mid"><span class="glyphicon glyphicon-edit"></span></a>
-                                <a :value="meeting.mid" onclick="delMeeting(this)" title="删除议程"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                <a data-toggle="modal" data-target=".bs-example-modal-sm" :value="meeting.mid" onclick="dealModel(this)" title="删除议程"><span class="glyphicon glyphicon-trash"></span></a></td>
                         </tr>
                     </table>
+                    <div id="nothingS" class="alert alert-warning" role="alert">你还没有发起任何会议</div>
                 </div>
             </div>
 
             <div class="panel panel-default">
-                <div class="panel-heading">参与的议程</div>
+                <div class="panel-heading">参与的会议</div>
                 <div class="panel-body">
                     <table id="takelistTable" class="table table-hover table-striped">
                         <tr style="font-size:17px;color:#fff;background-color: #00B0AD">
@@ -87,12 +88,54 @@
                             <td>{{meeting.startDate}}</td>
                             <td>{{meeting.endDate}}</td>
                             <td>{{meeting.actors}}</td>
-                            <td><a onclick="outMeeting(this)" title="退出议程" :value="meeting.mid"><span class="glyphicon glyphicon-log-out"></span></a></td>
+                            <td><a data-toggle="modal" data-target=".bs-example-modal-sm2" onclick="quitModel(this)" title="退出议程" :value="meeting.mid"><span class="glyphicon glyphicon-log-out"></span></a></td>
                         </tr>
+
                     </table>
+                    <div id="nothingP" class="alert alert-warning" role="alert">当前没有参与的会议</div>
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div id='sureQuit' class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <fieldset>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">退出会议</h4>
+                    </div>
+                    <div class="modal-body">
+                        是否退出这个会议？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button id="quitIt" value="0" type="button" class="btn btn-danger" onclick="outMeeting(this)">确定</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <div id='sureDel' class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <fieldset>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">删除会议</h4>
+                    </div>
+                    <div class="modal-body">
+                        是否删除这个会议？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button id="deleteIt" value="0" type="button" class="btn btn-danger" onclick="delMeeting(this)">确定</button>
+                    </div>
+                </fieldset>
+            </div>
         </div>
     </div>
 
@@ -102,7 +145,7 @@
                 <fieldset>
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="gridSystemModalLabel">增加议程</h4>
+                        <h4 class="modal-title" id="gridSystemModalLabel">增加会议</h4>
                     </div>
                     <div class="modal-body col-md-offset-1 col-md-10">
                         <div id="notice2"></div>
