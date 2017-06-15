@@ -30,8 +30,8 @@ Date.prototype.Format = function(fmt) {
 function comptime(beginTime, endTime) {
   var beginTimes = beginTime.substring(0, 10).split('-');
   var endTimes = endTime.substring(0, 10).split('-');
-  beginTime = beginTimes[1] + '-' + beginTimes[2] + '-' + beginTimes[0] +
-    ' ' + beginTime.substring(10, 19);
+  beginTime = beginTimes[1] + '-' + beginTimes[2] + '-' + beginTimes[0] + ' ' +
+    beginTime.substring(10, 19);
   endTime = endTimes[1] + '-' + endTimes[2] + '-' + endTimes[0] + ' ' +
     endTime.substring(10, 19);
   var a = (Date.parse(endTime) - Date.parse(beginTime)) / 3600 / 1000;
@@ -167,8 +167,9 @@ function isNullTest(id, send) {
 } //非空检测
 
 function lengthTest(id, min, max, send, qwq) {
-  if (document.getElementById(id).value.length < min || document.getElementById(id).value.length > max) {
-    1 === qwq ? sendNotice2(send) : sendNotice(send); //qwq=1是模态框类通知
+  if (document.getElementById(id).value.length < min ||
+    document.getElementById(id).value.length > max) {
+    1 === qwq ? sendNotice2(send) : sendNotice(send); // qwq=1是模态框类通知
     $('#' + id).focus();
     return 0;
   } else {
@@ -177,8 +178,9 @@ function lengthTest(id, min, max, send, qwq) {
 } //检测长度
 
 function isEqualTest(id1, id2, send, qwq) {
-  if (document.getElementById(id1).value != document.getElementById(id2).value) {
-    qwq === 1 ? sendNotice2(send) : sendNotice(send); //qwq=1是模态框类通知
+  if (document.getElementById(id1).value !=
+    document.getElementById(id2).value) {
+    qwq === 1 ? sendNotice2(send) : sendNotice(send); // qwq=1是模态框类通知
     $('#' + id2).focus();
     return 0;
   } else {
@@ -187,41 +189,48 @@ function isEqualTest(id1, id2, send, qwq) {
 } //检测相等
 
 function login() {
-  if (isNullTest('userEmail', '<strong>邮箱地址为空</strong>  请输入邮箱地址')) return;
-  if (isNullTest('userPassword', '<strong>密码为空</strong>  请输入密码')) return;
-  var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  if (isNullTest('userEmail', '<strong>邮箱地址为空</strong>  请输入邮箱地址'))
+    return;
+  if (isNullTest('userPassword', '<strong>密码为空</strong>  请输入密码'))
+    return;
+  var pattern =
+    /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   if (!regularTest(pattern, 'userEmail', '请输入有效的Email！')) return;
   sendNotice('登陆中，请稍后');
-  $.post('api/login', {
-    userEmail: document.getElementById('userEmail').value,
-    userPassword: hex_sha1(document.getElementById('userPassword').value)
-  }, function(data) {
-    if (data.state == 'success') {
-      document.cookie = 'name=' + data.name;
-      document.cookie = 'detail=' + data.detail;
-      document.cookie = 'web=' + data.web;
-      document.cookie = 'tureEmail=' + data.tureEmail;
-      document.cookie = 'userEmail=' + document.getElementById('userEmail').value;
-      if (data.tureEmail == 0) {
-        window.location.href = 'mail.html';
-      } else {
-        window.location.href = 'list.html';
+  $.post(
+    'api/login', {
+      userEmail: document.getElementById('userEmail').value,
+      userPassword: hex_sha1(document.getElementById('userPassword').value)
+    },
+    function(data) {
+      if (data.state == 'success') {
+        document.cookie = 'name=' + data.name;
+        document.cookie = 'detail=' + data.detail;
+        document.cookie = 'web=' + data.web;
+        document.cookie = 'tureEmail=' + data.tureEmail;
+        document.cookie = 'verify=' + data.verify;
+        document.cookie =
+          'userEmail=' + document.getElementById('userEmail').value;
+        if (data.tureEmail == 0) {
+          window.location.href = 'mail.html';
+        } else {
+          window.location.href = 'list.html';
+        }
+      } else { //失败
+        switch (data.why) {
+          case 'ERROR_USER':
+            $('#userEmail').val('');
+            $('#userEmail').focus();
+            sendNotice('<strong>邮箱不存在</strong>请重新输入或进行注册');
+            break;
+          case 'ERROR_PASSWORD':
+            $('#userPassword').val('');
+            $('#userPassword').focus();
+            sendNotice('<strong>密码</strong>错误，请重新输入');
+            break;
+        }
       }
-    } else { //失败
-      switch (data.why) {
-        case 'ERROR_USER':
-          $('#userEmail').val('');
-          $('#userEmail').focus();
-          sendNotice('<strong>邮箱不存在</strong>请重新输入或进行注册');
-          break;
-        case 'ERROR_PASSWORD':
-          $('#userPassword').val('');
-          $('#userPassword').focus();
-          sendNotice('<strong>密码</strong>错误，请重新输入');
-          break;
-      }
-    }
-  });
+    });
 } //登陆操作
 
 function register() {
@@ -229,25 +238,33 @@ function register() {
   if (isNullTest('userName', '请输入用户名')) return;
   if (isNullTest('userPassword', '请输入密码')) return;
   if (isNullTest('userPassword2', '请再次输入密码')) return;
-  var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  var pattern =
+    /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   if (!regularTest(pattern, 'userEmail', '请输入有效的Email！')) return;
   pattern = /^[a-zA-Z0-9\_\.]{3,20}$/;
-  if (!regularTest(pattern, 'userName', '请输入有效的用户名(由字母，数字，下划线组成，3-20位)')) return;
-  if (!lengthTest('userPassword', 6, 20, '密码长度不合法，有效长度：6 - 20')) return;
-  if (!isEqualTest('userPassword', 'userPassword2', '两次输入的密码不一致')) return;
-  $.post('api/register', {
-    userEmail: document.getElementById('userEmail').value,
-    userName: document.getElementById('userName').value,
-    userPassword: hex_sha1(document.getElementById('userPassword').value)
-  }, function(data) {
-    if (data.state == 'success') {
-      window.location.href = 'index.html?op=5';
-    } else if (data.why == 'EMAIL_HAD') {
-      sendNotice('邮箱已经被注册，请登陆。');
-    } else {
-      sendNotice('非法请求');
-    }
-  });
+  if (!regularTest(
+      pattern, 'userName',
+      '请输入有效的用户名(由字母，数字，下划线组成，3-20位)'))
+    return;
+  if (!lengthTest('userPassword', 6, 20, '密码长度不合法，有效长度：6 - 20'))
+    return;
+  if (!isEqualTest('userPassword', 'userPassword2', '两次输入的密码不一致'))
+    return;
+  $.post(
+    'api/register', {
+      userEmail: document.getElementById('userEmail').value,
+      userName: document.getElementById('userName').value,
+      userPassword: hex_sha1(document.getElementById('userPassword').value)
+    },
+    function(data) {
+      if (data.state == 'success') {
+        window.location.href = 'index.html?op=5';
+      } else if (data.why == 'EMAIL_HAD') {
+        sendNotice('邮箱已经被注册，请登陆。');
+      } else {
+        sendNotice('非法请求');
+      }
+    });
 } //注册模块
 
 function forgetPwd() {
@@ -255,31 +272,38 @@ function forgetPwd() {
   if (isNullTest('vCode', '请输入验证码')) return;
   if (isNullTest('userPassword', '请输入密码')) return;
   if (isNullTest('userPassword2', '请再次输入密码')) return;
-  var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  var pattern =
+    /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   if (!regularTest(pattern, 'userEmail', '请输入有效的Email！')) return;
   pattern = /^[0-9\_\.]{6,6}$/;
   if (!regularTest(pattern, 'vCode', '请输入有效的验证码')) return;
-  if (!lengthTest('userPassword', 6, 20, '密码长度不合法，有效长度：6 - 20')) return;
-  if (!isEqualTest('userPassword', 'userPassword2', '两次输入的密码不一致')) return;
-  $.post('api/forget', {
-    userEmail: document.getElementById('userEmail').value,
-    vCode: document.getElementById('vCode').value,
-    userPassword: hex_sha1(document.getElementById('userPassword').value)
-  }, function(data) {
-    if (data.state == 'success') {
-      window.location.href = 'index.html?op=6';
-    } else if (data.why == 'EMAIL_NOT') {
-      sendNotice('邮箱已经不存在，请进行注册');
-    } else if (data.why == 'ERR_VCODE') {
-      sendNotice('验证码错误！');
-    }
-  });
+  if (!lengthTest('userPassword', 6, 20, '密码长度不合法，有效长度：6 - 20'))
+    return;
+  if (!isEqualTest('userPassword', 'userPassword2', '两次输入的密码不一致'))
+    return;
+  $.post(
+    'api/forget', {
+      userEmail: document.getElementById('userEmail').value,
+      vCode: document.getElementById('vCode').value,
+      userPassword: hex_sha1(document.getElementById('userPassword').value)
+    },
+    function(data) {
+      if (data.state == 'success') {
+        window.location.href = 'index.html?op=6';
+      } else if (data.why == 'EMAIL_NOT') {
+        sendNotice('邮箱已经不存在，请进行注册');
+      } else if (data.why == 'ERR_VCODE') {
+        sendNotice('验证码错误！');
+      }
+    });
 } //忘记密码模块
 
 function toCinfo() {
-  $.post('api/user/info', {
+  $.post(
+    'api/user/info', {
       userDetail: document.getElementById('user_detail').value,
-      userWeb: document.getElementById('user_web').value
+      userWeb: document.getElementById('user_web').value,
+      verify: document.getElementById('verify').checked
     },
     function(data) {
       if (data.state == 'success') {
@@ -291,11 +315,15 @@ function toCinfo() {
 } //修改个人信息
 
 function toCpwd() {
-  if (!lengthTest('old_password', 6, 20, '密码长度不合法，有效长度：6 - 20', 1)) return;
-  if (!lengthTest('new_password', 6, 20, '密码长度不合法，有效长度：6 - 20', 1)) return;
-  if (!isEqualTest('new_password', 'new_password2', '两次输入的密码不一致', 1)) return;
+  if (!lengthTest('old_password', 6, 20, '密码长度不合法，有效长度：6 - 20', 1))
+    return;
+  if (!lengthTest('new_password', 6, 20, '密码长度不合法，有效长度：6 - 20', 1))
+    return;
+  if (!isEqualTest('new_password', 'new_password2', '两次输入的密码不一致', 1))
+    return;
 
-  $.post('api/user/pwd', {
+  $.post(
+    'api/user/pwd', {
       oldPassword: hex_sha1(document.getElementById('old_password').value),
       newPassword: hex_sha1(document.getElementById('new_password').value),
     },
@@ -349,42 +377,44 @@ function isLogin(callback) {
 } //检测是否登陆和验证邮箱
 
 function loadBar(id) {
-  $("#nav-bar").load("nav-bar.html", function() {
-    $(id).addClass("active");
-    var username = getCookie("name");
-    if (username !== null && username !== "") {
-      document.getElementById('userBar').innerHTML = username + ' <span class="caret"></span>';
+  $('#nav-bar').load('nav-bar.html', function() {
+    $(id).addClass('active');
+    var username = getCookie('name');
+    if (username !== null && username !== '') {
+      document.getElementById('userBar').innerHTML =
+        username + ' <span class="caret"></span>';
     } else {
-      document.getElementById('userBar').innerHTML = '未登陆 <span class="caret"></span>';
+      document.getElementById('userBar').innerHTML =
+        '未登陆 <span class="caret"></span>';
     }
   }); //加载标题栏
 }
 
 function settime() { //设置按钮倒计时
   if (countdown < 0) {
-    document.getElementById('gCode').removeAttribute("disabled");
-    document.getElementById('gCode').innerHTML = "获取验证码";
+    document.getElementById('gCode').removeAttribute('disabled');
+    document.getElementById('gCode').innerHTML = '获取验证码';
     countdown = 120;
   } else {
-    document.getElementById('gCode').setAttribute("disabled", true);
-    document.getElementById('gCode').innerHTML = "重新发送(" + countdown + ")";
+    document.getElementById('gCode').setAttribute('disabled', true);
+    document.getElementById('gCode').innerHTML = '重新发送(' + countdown + ')';
     countdown--;
     setTimeout(settime, 1000);
   }
 }
 
 function getCode() { //获取验证码
-  $.post('api/getVCode', {
-    userEmail: document.getElementById('userEmail').value
-  }, function(data) {
-    if (data.state == 'success') {
-      settime();
-    } else if (data.why == 'EMAIL_NOT') {
-      sendNotice('邮箱已经不存在，请进行注册');
-    } else if (data.why == 'TIME_LIMIT') {
-      sendNotice('请两分钟后再尝试');
-    }
-  });
+  $.post(
+    'api/getVCode', { userEmail: document.getElementById('userEmail').value },
+    function(data) {
+      if (data.state == 'success') {
+        settime();
+      } else if (data.why == 'EMAIL_NOT') {
+        sendNotice('邮箱已经不存在，请进行注册');
+      } else if (data.why == 'TIME_LIMIT') {
+        sendNotice('请两分钟后再尝试');
+      }
+    });
 }
 
 function getList() {
@@ -399,13 +429,19 @@ function getList() {
     list.meetings = data.listOfSponsor;
     list2.meetings = data.listOfParticipate;
     userList.users = data.users;
+    myNotice.notices = data.notice;
+    setTimeout(() => {
+      $("[data-toggle='tooltip']").tooltip();
+    }, 1000);
     if (list.meetings.length != 0) {
       $('#mylistTable').show();
       $('#nothingS').hide();
     } else {
       $('#mylistTable').hide();
       $('#nothingS').show();
-      $('#nothingS').html('<div class="alert alert-warning alert-dismissible" role="alert">你还没有发起任何会议</div>');
+      $('#nothingS')
+        .html(
+          '<div class="alert alert-warning alert-dismissible" role="alert">你还没有发起任何会议</div>');
     }
 
     if (list2.meetings.length != 0) {
@@ -414,31 +450,47 @@ function getList() {
     } else {
       $('#takelistTable').hide();
       $('#nothingP').show();
-      $('#nothingP').html('<div class="alert alert-warning alert-dismissible" role="alert">当前没有参与的会议</div>');
+      $('#nothingP')
+        .html(
+          '<div class="alert alert-warning alert-dismissible" role="alert">当前没有参与的会议</div>');
     }
 
     for (i in list.meetings) {
       list.meetings[i].class = 'default';
-      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].endDate) <= 0) {
+      list.meetings[i].state = '未开始';
+      if (comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list.meetings[i].endDate) <= 0) {
         list.meetings[i].class = 'success';
-        list.meetings[i].name += ' (已完成)';
+        list.meetings[i].state = '已完成';
       }
-      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].startDate) <= 0 &&
-        comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list.meetings[i].endDate) >= 0) {
+      if (comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list.meetings[i].startDate) <= 0 &&
+        comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list.meetings[i].endDate) >= 0) {
         list.meetings[i].class = 'warning';
-        list.meetings[i].name += ' (进行中)';
+        list.meetings[i].state = '进行中';
       }
     }
     for (i in list2.meetings) {
       list2.meetings[i].class = 'default';
-      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].endDate) <= 0) {
+      list2.meetings[i].state = '未开始';
+      if (comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list2.meetings[i].endDate) <= 0) {
         list2.meetings[i].class = 'success';
-        list2.meetings[i].name += ' (已完成)';
+        list2.meetings[i].state = '已完成';
       }
-      if (comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].startDate) <= 0 &&
-        comptime(new Date().Format('yyyy-MM-dd hh:mm:ss'), list2.meetings[i].endDate) >= 0) {
+      if (comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list2.meetings[i].startDate) <= 0 &&
+        comptime(
+          new Date().Format('yyyy-MM-dd hh:mm:ss'),
+          list2.meetings[i].endDate) >= 0) {
         list2.meetings[i].class = 'warning';
-        list2.meetings[i].name += ' (进行中)';
+        list2.meetings[i].state = '进行中';
       }
     }
   });
@@ -460,46 +512,49 @@ function dealMeeting(e) {
     $('#input_endDate').focus();
     return;
   }
-  var str = "";
-  $("input[name='input_user']").each(function() {
-    if ($(this).is(":checked")) {
-      if (str != "") str += ',';
+  var str = '';
+  $('input[name=\'input_user\']').each(function() {
+    if ($(this).is(':checked')) {
+      if (str != '') str += ',';
       str += $(this).val();
     }
   });
-  if (str == "") {
+  if (str == '') {
     sendNotice2('参与者不能为空');
     return;
   }
-  $.post('api/' + e.getAttribute('value'), {
-    name: document.getElementById('meetName').value,
-    startDate: document.getElementById('input_startDate').value,
-    endDate: document.getElementById('input_endDate').value,
-    actors: str,
-    mid: e.getAttribute('data-mid')
-  }, (data) => {
-    if (data.state == 'success') {
-      getList();
-      $('#addMeet').modal('hide');
-      document.getElementById('meetName').value = '';
-      document.getElementById('input_startDate').value = '';
-      document.getElementById('input_endDate').value = '';
-      var checkbox = document.getElementsByName('input_user');
-      for (i in checkbox) {
-        checkbox[i].checked = false;
+  $.post(
+    'api/' + e.getAttribute('value'), {
+      name: document.getElementById('meetName').value,
+      startDate: document.getElementById('input_startDate').value,
+      endDate: document.getElementById('input_endDate').value,
+      actors: str,
+      mid: e.getAttribute('data-mid'),
+      detail: document.getElementById('input_detail').value,
+    },
+    (data) => {
+      if (data.state == 'success') {
+        getList();
+        $('#addMeet').modal('hide');
+        document.getElementById('meetName').value = '';
+        document.getElementById('input_startDate').value = '';
+        document.getElementById('input_endDate').value = '';
+        var checkbox = document.getElementsByName('input_user');
+        for (i in checkbox) {
+          checkbox[i].checked = false;
+        }
+      } else {
+        if (data.why == 'HAD_MEETING') {
+          sendNotice2('该会议已存在');
+        } else if (data.why == 'DATE_SP') {
+          sendNotice2('你的时间有冲突');
+        } else if (data.why == 'DATE_AC') {
+          sendNotice2('参与者的时间有冲突');
+        } else if (data.why == 'DATE_NO') {
+          sendNotice2('会议时间不合法');
+        }
       }
-    } else {
-      if (data.why == 'HAD_MEETING') {
-        sendNotice2('该会议已存在');
-      } else if (data.why == 'DATE_SP') {
-        sendNotice2('你的时间有冲突');
-      } else if (data.why == 'DATE_AC') {
-        sendNotice2('参与者的时间有冲突');
-      } else if (data.why == 'DATE_NO') {
-        sendNotice2('会议时间不合法');
-      }
-    }
-  });
+    });
 }
 
 function delMeeting(e) {
@@ -534,13 +589,16 @@ function editMeeting(e) {
   $('#Alert_').alert('close');
   document.getElementById('gridSystemModalLabel').innerHTML = '编辑会议';
   document.getElementById('sendMeeting').value = 'editMeeting';
-  document.getElementById('sendMeeting').setAttribute('data-mid', e.getAttribute('value'));
+  document.getElementById('sendMeeting')
+    .setAttribute('data-mid', e.getAttribute('value'));
   var mid = e.getAttribute('value');
   var meetingList = list.meetings;
   for (i in meetingList) {
     if (mid == meetingList[i].mid) {
       document.getElementById('meetName').value = meetingList[i].name;
-      document.getElementById('input_startDate').value = meetingList[i].startDate;
+      document.getElementById('input_detail').value = meetingList[i].detail;
+      document.getElementById('input_startDate').value =
+        meetingList[i].startDate;
       document.getElementById('input_endDate').value = meetingList[i].endDate;
       var checkbox = document.getElementsByName('input_user');
       var actorList = meetingList[i].actors.split(',');
@@ -558,8 +616,35 @@ function editMeeting(e) {
 
 function dealModel(e) {
   document.getElementById('deleteIt').value = e.getAttribute('value');
+  var mid = e.getAttribute('value');
+  var meetingList = list.meetings;
+  for (i in meetingList) {
+    if (mid == meetingList[i].mid) {
+      document.getElementById('dmName').innerHTML = meetingList[i].name;
+    }
+  }
 }
 
 function quitModel(e) {
   document.getElementById('quitIt').value = e.getAttribute('value');
+  var mid = e.getAttribute('value');
+  var meetingList = list2.meetings;
+  for (i in meetingList) {
+    if (mid == meetingList[i].mid) {
+      document.getElementById('qmName').innerHTML = meetingList[i].name;
+    }
+  }
+}
+
+function addNotice() {
+  $.post('api/addNotice', {
+    data: document.getElementById('noticeData').value
+  }, (data) => {
+    document.getElementById('noticeData').value = '';
+    if (data.why == 'TIME_LIMIT') {
+      alert('一个小时只能发一次公告');
+    } else {
+      getList();
+    }
+  });
 }
