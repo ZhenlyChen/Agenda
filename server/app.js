@@ -198,15 +198,11 @@ app.post('/mail', (req, res, next) => { // 获取授权参数
     } else {
       if (vals[0].tureEmail == 1) {
         console.log('Err: This had is a tureEmail.');
-        userModule.makeASign(req, res, () => {
-          res.send({ state: 'failed', why: 'HAD_TURE' });
-        });
+        res.send({ state: 'failed', why: 'HAD_TURE' });
         next('route');
       } else {
         console.log('Err: Send two emails in a hour.');
-        userModule.makeASign(req, res, () => {
-          res.send({ state: 'failed', why: 'HAD_SEND' });
-        });
+        res.send({ state: 'failed', why: 'HAD_SEND' });
         next('route');
       }
     }
@@ -240,37 +236,29 @@ app.post(
           '\' WHERE `id`=' + res.locals.data.userID;
         sqlModule.query(sqlCmd);
         console.log('Updata password!');
-        userModule.makeASign(req, res, () => {
-          res.send({ state: 'success' });
-        });
+        res.send({ state: 'success' });
       } else {
         console.log('Err: Password is ERR');
-        userModule.makeASign(req, res, () => {
-          res.send({ state: 'failed', why: 'ERR_PWD' });
-        });
+        res.send({ state: 'failed', why: 'ERR_PWD' });
       }
     });
   });
 //------------------------------------------------------------------------------
 //修改个人信息
-app.post(
-  '/user/info', [userModule.appUserVerif, userModule.isTrueUser],
-  (req, res, next) => { //更新数据库个人信息
-    console.log('Info Change: ');
-    var userDetail = sqlModule.dealEscape(req.body.userDetail);
-    var userWeb = sqlModule.dealEscape(req.body.userWeb);
-    var verify = 1;
-    if (req.body.verify == 'true') verify = 0;
-    console.log(req.body.verify);
-    var sqlCmd = 'UPDATE `user` SET  `detail`=\'' + userDetail +
-      '\',`web`=\'' + userWeb + '\', `verify`=' + verify +
-      ' WHERE `id`=' + res.locals.data.userID;
-    sqlModule.query(sqlCmd);
-    console.log('Update user Info!');
-    userModule.makeASign(req, res, () => {
-      res.send({ state: 'success' });
-    });
-  });
+app.post('/user/info', [userModule.appUserVerif, userModule.isTrueUser], (req, res, next) => { //更新数据库个人信息
+  console.log('Info Change: ');
+  var userDetail = sqlModule.dealEscape(req.body.userDetail);
+  var userWeb = sqlModule.dealEscape(req.body.userWeb);
+  var verify = 1;
+  if (req.body.verify == 'true') verify = 0;
+  console.log(req.body.verify);
+  var sqlCmd = 'UPDATE `user` SET  `detail`=\'' + userDetail +
+    '\',`web`=\'' + userWeb + '\', `verify`=' + verify +
+    ' WHERE `id`=' + res.locals.data.userID;
+  sqlModule.query(sqlCmd);
+  console.log('Update user Info!');
+  res.send({ state: 'success' });
+});
 //------------------------------------------------------------------------------
 //获取邮件验证码
 app.post('/getVCode', (req, res, next) => { //检测请求是否合法
@@ -349,47 +337,40 @@ app.get('/layout', (req, res, next) => { //清空cookies
 //------------------------------------------------------------------------------
 //获取会议,用户列表
 // todo
-app.post(
-  '/getList', [userModule.appUserVerif],
-  (req, res, next) => {
-    console.log('Get Meeting List Success!');
-    var sqlCmd = 'SELECT * FROM `notice` WHERE 1';
-    sqlModule.query(sqlCmd, (vals, isNull) => {
-      res.locals.notice = vals;
-      next();
-    });
-  },
-  (req, res, next) => {
-    var sqlCmd = 'SELECT `name`, `verify` FROM `user` WHERE 1';
-    sqlModule.query(sqlCmd, (vals, isNull) => {
-      var userList = new Array;
-      for (i in vals) {
-        if (vals[i].name != res.locals.userName && vals[i].verify != 0)
-          userList.push(vals[i]);
-      }
-      meetModule.refreshList(res, (listOfS, listOfP) => {
-        userModule.makeASign(req, res, () => {
-          res.send({
-            listOfSponsor: listOfS,
-            listOfParticipate: listOfP,
-            users: userList,
-            notice: res.locals.notice
-          });
-        });
+app.post('/getList', [userModule.appUserVerif], (req, res, next) => {
+  console.log('Get Meeting List Success!');
+  var sqlCmd = 'SELECT * FROM `notice` WHERE 1';
+  sqlModule.query(sqlCmd, (vals, isNull) => {
+    res.locals.notice = vals;
+    next();
+  });
+}, (req, res, next) => {
+  var sqlCmd = 'SELECT `name`, `verify` FROM `user` WHERE 1';
+  sqlModule.query(sqlCmd, (vals, isNull) => {
+    var userList = new Array;
+    for (i in vals) {
+      if (vals[i].name != res.locals.userName && vals[i].verify != 0)
+        userList.push(vals[i]);
+    }
+    meetModule.refreshList(res, (listOfS, listOfP) => {
+      res.send({
+        listOfSponsor: listOfS,
+        listOfParticipate: listOfP,
+        users: userList,
+        notice: res.locals.notice
       });
     });
   });
+});
 
 //------------------------------------------------------------------------------
 // 增加公告
-app.post('/addNotice', [userModule.appUserVerif], (req, res, next) => {
+app.post('/addNotice', [userModule.appUserVerif], (req, res, next) => { // 时间限制
   var sqlCmd = 'SELECT `sendEmailTime` FROM `user` WHERE `id`=' + res.locals.data.userID;
   sqlModule.query(sqlCmd, (vals, isNull) => {
     var nowTime = new Date().Format('yyyy-MM-dd-hh');
     if (nowTime == vals[0].sendEmailTime) {
-      userModule.makeASign(req, res, () => {
-        res.send({ state: 'failed', why: 'TIME_LIMIT' });
-      });
+      res.send({ state: 'failed', why: 'TIME_LIMIT' });
       next('route');
     } else {
       sqlCmd = 'UPDATE `user` SET `sendEmailTime`=\'' + nowTime + '\' WHERE `id`=' + res.locals.data.userID;
@@ -397,99 +378,110 @@ app.post('/addNotice', [userModule.appUserVerif], (req, res, next) => {
         next();
       });
     }
-  })
-}, (req, res, next) => {
+  });
+}, (req, res, next) => { // 写入数据库
   console.log('Add a notice!');
   var nowTime = new Date().Format('yyyy-MM-dd hh:mm:ss');
   var sqlCmd = 'INSERT INTO `notice`(`man`, `data`,`time`) VALUES (\'' +
     res.locals.userName + '\',\'' + req.body.data + '\',\'' + nowTime + '\')';
   sqlModule.query(sqlCmd);
-  userModule.makeASign(req, res, () => {
-    res.send({ state: 'success' });
-  });
+  res.send({ state: 'success' });
 });
 //------------------------------------------------------------------------------
 // 增加，修改会议内容
-app.post(
-  '/editMeeting', [userModule.appUserVerif],
-  (req, res, next) => {
-    console.log('Edit Meeting');
-    var sqlCmd = 'SELECT * FROM `meeting` WHERE 1';
-    sqlModule.query(sqlCmd, (vals, isNull) => {
-      for (i in vals) {
-        // 重名会议检测
-        if (req.body.name == vals[i].name && req.body.mid != vals[i].mid) {
-          res.locals.send = { state: 'failed', why: 'HAD_MEETING' };
-          console.log('ERR: HAD_MEETING');
-          next();
-        }
-        // 发起者和参与者重名检测 TODO NOT MUST
-        // 参与者重名检测 TODO NOT MUST
-        // 参与者是否存在 TODO NOT MUST
-        // 发起者日期检测重叠 TODO
-        if (res.locals.data.userID == vals[i].uid &&
-          req.body.mid != vals[i].mid) {
-          if (!(userModule.comptime(req.body.startDate, vals[i].endDate) <=
-              0 ||
-              userModule.comptime(req.body.endDate, vals[i].startDate) >=
-              0)) {
-            res.locals.send = { state: 'failed', why: 'DATE_SP' };
-            console.log('ERR: DATE_SP');
-            next();
-          }
-        }
-        if (userModule.comptime(req.body.startDate, req.body.endDate) <= 0) {
-          res.locals.send = { state: 'failed', why: 'DATE_NO' };
-          console.log('ERR: DATE_NO');
-          next();
-        }
-        // 参与者日期检测重叠 TODO
-        var actorsList = vals[i].actors.split(',');
-        var actorsIn = req.body.actors.split(',');
-        actorsIn.push(res.locals.userName);
-        for (ai in actorsIn) {
-          for (al in actorsList) {
-            if (actorsList[al] == actorsIn[ai] &&
-              req.body.mid != vals[i].mid) { // 这个参与者在这个会议里面
-              if (!(userModule.comptime(
-                    req.body.startDate, vals[i].endDate) <= 0 ||
-                  userModule.comptime(
-                    req.body.endDate, vals[i].startDate) >= 0)) {
-                res.locals.send = { state: 'failed', why: 'DATE_AC' };
-                console.log('ERR: DATE_AC');
-                next();
-              }
-            }
-          }
-        }
-      }
-      res.locals.send = { state: 'success' };
-      console.log('success');
+app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获取会议数据
+  console.log('Edit Meeting');
+  var sqlCmd = 'SELECT * FROM `meeting` WHERE 1';
+  sqlModule.query(sqlCmd, (vals, isNull) => {
+    res.locals.meetings = vals;
+    if (userModule.comptime(req.body.startDate, req.body.endDate) <= 0) { // 日期合法性检测
+      res.send({ state: 'failed', why: 'DATE_NO' });
+      console.log('ERR: DATE_NO');
+      next('route');
+    } else {
       next();
-    });
-  },
-  (req, res, next) => {
-    if (res.locals.send.state == 'success') {
-      if (req.body.mid != 0) {
-        sqlCmd = 'UPDATE `meeting` SET `name`=\'' + req.body.name +
-          '\',`startDate`=\'' + req.body.startDate + '\',`endDate`=\'' +
-          req.body.endDate + '\',`actors`=\'' + req.body.actors +
-          '\',`detail`=\'' + req.body.detail +
-          '\' WHERE `mid`=' + req.body.mid;
-      } else {
-        sqlCmd =
-          'INSERT INTO `meeting`(`uid`, `name`, `sponsor`, `startDate`, `endDate`, `actors`, `detail`)' +
-          ' VALUES (' + res.locals.data.userID + ',\'' + req.body.name +
-          '\',\'' + res.locals.userName + '\',\'' + req.body.startDate +
-          '\',\'' + req.body.endDate + '\',\'' + req.body.actors + '\',\'' +
-          req.body.detail + '\')';
-      }
-      sqlModule.query(sqlCmd);
     }
-    userModule.makeASign(req, res, () => {
-      res.send(res.locals.send);
-    });
   });
+}, (req, res, next) => {
+  var actorsList = req.body.actors.split(',');
+  var sqlCmd = 'SELECT `name`, `verify` FROM `user` WHERE 1';
+  sqlModule.query(sqlCmd, (vals, isNull) => {
+    var trueUser = new Array;
+    for (i in actorsList) {
+      if (res.locals.userName == actorsList[i]) { // 发起者和参与者重名检测
+        res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
+        next('route');
+        return;
+      }
+      var flag = 0; // 参与者是否存在
+      for (j in vals) {
+        if (vals[j].name == actorsList[i] && vals[j].verify == 1) flag = 1;
+      }
+      if (flag == 0) {
+        res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
+        next('route');
+        return;
+      }
+      for (k in trueUser) { // 参与者重名检测
+        if (trueUser[k] == actorsList[i]) {
+          res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
+          next('route');
+          return;
+        }
+      }
+      trueUser.push(actorsList[i]);
+    }
+  });
+  next();
+}, (req, res, next) => { // 重名会议检测
+  for (i in res.locals.meetings) {
+    if (req.body.name == res.locals.meetings[i].name && req.body.mid != res.locals.meetings[i].mid) {
+      res.send({ state: 'failed', why: 'HAD_MEETING' });
+      console.log('ERR: HAD_MEETING');
+      next('route');
+      return;
+    }
+  }
+  next();
+}, (req, res, next) => { // 时间冲突检测
+  for (i in res.locals.meetings) {
+    var actorsList = res.locals.meetings[i].actors.split(','); // 这个会议的参与者
+    var actorsIn = req.body.actors.split(','); // 新建会议的参与者
+    actorsIn.push(res.locals.userName);
+    for (ai in actorsIn) {
+      for (al in actorsList) {
+        if ((actorsIn[ai] == actorsList[al] || actorsIn[ai] == res.locals.meetings[i].name) &&
+          req.body.mid != res.locals.meetings[i].mid) { // 这个参与者在这个会议里面
+          if (!(userModule.comptime(req.body.startDate, res.locals.meetings[i].endDate) <= 0 ||
+              userModule.comptime(req.body.endDate, res.locals.meetings[i].startDate) >= 0)) {
+            res.send({ state: 'failed', why: 'DATE_AC', name: actorsIn[ai] });
+            console.log('ERR: DATE_AC');
+            next('route');
+            return;
+          }
+        }
+      }
+    }
+  }
+  next();
+}, (req, res, next) => {
+  if (req.body.mid != 0) {
+    sqlCmd = 'UPDATE `meeting` SET `name`=\'' + req.body.name +
+      '\',`startDate`=\'' + req.body.startDate + '\',`endDate`=\'' +
+      req.body.endDate + '\',`actors`=\'' + req.body.actors +
+      '\',`detail`=\'' + req.body.detail +
+      '\' WHERE `mid`=' + req.body.mid;
+  } else {
+    sqlCmd =
+      'INSERT INTO `meeting`(`uid`, `name`, `sponsor`, `startDate`, `endDate`, `actors`, `detail`)' +
+      ' VALUES (' + res.locals.data.userID + ',\'' + req.body.name +
+      '\',\'' + res.locals.userName + '\',\'' + req.body.startDate +
+      '\',\'' + req.body.endDate + '\',\'' + req.body.actors + '\',\'' +
+      req.body.detail + '\')';
+  }
+  sqlModule.query(sqlCmd);
+  res.send({ state: 'success' });
+});
 //------------------------------------------------------------------------------
 //删除会议
 // todo
@@ -498,18 +490,14 @@ app.post('/delMeeting', [userModule.appUserVerif], (req, res, next) => {
   console.log('Delete meeting success!');
   var sqlCmd = 'DELETE FROM `meeting` WHERE `mid`=' + req.body.mid;
   sqlModule.query(sqlCmd, (vals, isNull) => {
-    userModule.makeASign(req, res, () => {
-      res.send({ state: 'success' });
-      next('route');
-    });
+    res.send({ state: 'success' });
+    next('route');
   });
 });
 //------------------------------------------------------------------------------
 //退出会议
 // todo
-app.post(
-  '/quitMeeting', [userModule.appUserVerif],
-  (req, res, next) => {
+app.post('/quitMeeting', [userModule.appUserVerif], (req, res, next) => {
     // 参与者是否存在检测 TODO NOT MUST
     console.log('Quit meeting success!');
     var sqlCmd = 'SELECT `actors` FROM `meeting` WHERE `mid`=' + req.body.mid;
@@ -534,20 +522,15 @@ app.post(
         '\' WHERE `mid`=' + req.body.mid;
     }
     sqlModule.query(sqlCmd, (vals, isNull) => {
-      userModule.makeASign(req, res, () => {
-        res.send({ state: 'success' });
-        next('route');
-      });
+      res.send({ state: 'success' });
+      next('route');
     });
   });
-//------------------------------------------------------------------------------
-// 注销账号
-// todo
 //------------------------------------------------------------------------------
 //监听30010端口
 var server = app.listen(30010, '127.0.0.1', () => { //监听localhost
   var host = server.address().address;
   var port = server.address().port;
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log('Listening at http://%s:%s', host, port);
 });
 //------------------------------------------------------------------------------

@@ -203,6 +203,7 @@ function login() {
       userPassword: hex_sha1(document.getElementById('userPassword').value)
     },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         document.cookie = 'name=' + data.name;
         document.cookie = 'detail=' + data.detail;
@@ -257,6 +258,7 @@ function register() {
       userPassword: hex_sha1(document.getElementById('userPassword').value)
     },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         window.location.href = 'index.html?op=5';
       } else if (data.why == 'EMAIL_HAD') {
@@ -288,6 +290,7 @@ function forgetPwd() {
       userPassword: hex_sha1(document.getElementById('userPassword').value)
     },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         window.location.href = 'index.html?op=6';
       } else if (data.why == 'EMAIL_NOT') {
@@ -306,6 +309,7 @@ function toCinfo() {
       verify: document.getElementById('verify').checked
     },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         sendNotice('成功修改信息。');
       } else {
@@ -328,6 +332,7 @@ function toCpwd() {
       newPassword: hex_sha1(document.getElementById('new_password').value),
     },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         $('#cPwd').modal('hide');
         sendNotice('成功修改密码。');
@@ -347,6 +352,7 @@ function toMail() {
       window.location.href = 'index.html?op=2';
       return;
     } else {
+      illegalTest(data);
       switch (data.why) {
         case 'HAD_SEND':
           alert('一个小时内只能发送一次');
@@ -407,6 +413,7 @@ function getCode() { //获取验证码
   $.post(
     'api/getVCode', { userEmail: document.getElementById('userEmail').value },
     function(data) {
+      illegalTest(data);
       if (data.state == 'success') {
         settime();
       } else if (data.why == 'EMAIL_NOT') {
@@ -418,14 +425,8 @@ function getCode() { //获取验证码
 }
 
 function getList() {
-  //$('#mylistTable').hide();
-  //$('#takelistTable').hide();
-  //$('#nothingS').hide();
-  //$('#nothingP').hide();
   $.post('api/getList', {}, (data) => {
-    if (data.state == 'failed') {
-      window.location.href = 'index.html?op=0';
-    }
+    illegalTest(data);
     list.meetings = data.listOfSponsor;
     list2.meetings = data.listOfParticipate;
     userList.users = data.users;
@@ -533,6 +534,7 @@ function dealMeeting(e) {
       detail: document.getElementById('input_detail').value,
     },
     (data) => {
+      illegalTest(data);
       if (data.state == 'success') {
         getList();
         $('#addMeet').modal('hide');
@@ -549,7 +551,7 @@ function dealMeeting(e) {
         } else if (data.why == 'DATE_SP') {
           sendNotice2('你的时间有冲突');
         } else if (data.why == 'DATE_AC') {
-          sendNotice2('参与者的时间有冲突');
+          sendNotice2(data.name + '的时间有冲突');
         } else if (data.why == 'DATE_NO') {
           sendNotice2('会议时间不合法');
         }
@@ -559,6 +561,7 @@ function dealMeeting(e) {
 
 function delMeeting(e) {
   $.post('api/delMeeting', { mid: e.getAttribute('value') }, (data) => {
+    illegalTest(data);
     $('#sureDel').modal('hide');
     getList();
   });
@@ -566,6 +569,7 @@ function delMeeting(e) {
 
 function outMeeting(e) {
   $.post('api/quitMeeting', { mid: e.getAttribute('value') }, (data) => {
+    illegalTest(data);
     $('#sureQuit').modal('hide');
     getList();
   });
@@ -575,6 +579,7 @@ function addMeeting() {
   $('#Alert_').alert('close');
   document.getElementById('gridSystemModalLabel').innerHTML = '发起会议';
   document.getElementById('sendMeeting').value = 'editMeeting';
+  document.getElementById('input_detail').value = '';
   document.getElementById('sendMeeting').setAttribute('data-mid', 0);
   document.getElementById('meetName').value = '';
   document.getElementById('input_startDate').value = '';
@@ -637,14 +642,25 @@ function quitModel(e) {
 }
 
 function addNotice() {
+  if (document.getElementById('noticeData').value == '') {
+    $('#noticeData').focus();
+    return;
+  }
   $.post('api/addNotice', {
     data: document.getElementById('noticeData').value
   }, (data) => {
+    illegalTest(data);
     document.getElementById('noticeData').value = '';
-    if (data.why == 'TIME_LIMIT') {
-      alert('一个小时只能发一次公告');
-    } else {
+    if (data.state == 'success') {
       getList();
+    } else if (data.why == 'TIME_LIMIT') {
+      alert('一个小时只能发一次公告');
     }
   });
+}
+
+function illegalTest(data) {
+  if (data.why == 'ILLEGAL_SIGN' || data.why == 'ILLEGAL_TOKEN') {
+    window.location.href = 'index.html?op=4';
+  }
 }

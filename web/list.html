@@ -130,11 +130,14 @@
                                 </span>
                             </div>
                         </div>
-                        <table id="cNotice" class="table table-hover">
-                            <tr v-for="notice in notices">
-                                <th><strong>{{notice.man}}</strong>: {{notice.data}} <small>  --{{notice.time}}</small></th>
-                            </tr>
-                        </table>
+                        <div id="cNotice" class="table table-hover" style="padding: 20px;">
+                            <div class="well">
+                                <blockquote v-for="notice in notices">
+                                    <p style="font-size: 20px;"><strong>{{notice.man}}</strong>: {{notice.data}}</p>
+                                    <footer style="text-align: right;">{{notice.time}}</footer>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,7 +295,17 @@
         var myNotice = new Vue({
             el: '#cNotice',
             data: {
-                notices: []
+                notices: [{
+                    data: "今天没有会议",
+                    id: 6,
+                    man: "zhenly",
+                    time: "2017-06-16 11:10:59"
+                }, {
+                    data: "今天没有会议",
+                    id: 6,
+                    man: "zhenly",
+                    time: "2017-06-16 11:10:59"
+                }]
             }
         });
         $('.form_datetime').datetimepicker({

@@ -4,6 +4,7 @@ done:
 优化会议状态显示方式
 会议具体描述
 通知系统 // 待完善
+封装makesign  // later
 
 todo:
-封装makesign  // later
+单独邮件验证tkoen

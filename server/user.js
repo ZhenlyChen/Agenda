@@ -71,7 +71,9 @@ exports.appUserVerif = function(req, res, next) {
       next('route');
     } else {
       res.locals.data = mydata;
-      next();
+      exports.makeASign(req, res, () => {
+        next();
+      });
     }
   });
 };
