@@ -210,6 +210,7 @@ function login() {
         document.cookie = 'web=' + data.web;
         document.cookie = 'tureEmail=' + data.tureEmail;
         document.cookie = 'verify=' + data.verify;
+        document.cookie = 'phone=' + data.phone;
         document.cookie =
           'userEmail=' + document.getElementById('userEmail').value;
         if (data.tureEmail == 0) {
@@ -302,15 +303,26 @@ function forgetPwd() {
 } //忘记密码模块
 
 function toCinfo() {
+  pattern = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|170|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+  if (!regularTest(pattern, 'user_phone', '请输入有效的手机号码！')) return;
   $.post(
     'api/user/info', {
       userDetail: document.getElementById('user_detail').value,
       userWeb: document.getElementById('user_web').value,
-      verify: document.getElementById('verify').checked
+      verify: document.getElementById('verify').checked,
+      phone: document.getElementById('user_phone').value
     },
     function(data) {
       illegalTest(data);
       if (data.state == 'success') {
+        document.cookie = 'detail=' + document.getElementById('user_detail').value;
+        document.cookie = 'web=' + document.getElementById('user_web').value;
+        if (document.getElementById('verify').checked == true) {
+          document.cookie = 'verify=0';
+        } else {
+          document.cookie = 'verify=1';
+        }
+        document.cookie = 'phone=' + document.getElementById('user_phone').value;
         sendNotice('成功修改信息。');
       } else {
         window.location.href = 'index.html?op=4';
@@ -455,22 +467,16 @@ function getList() {
         .html(
           '<div class="alert alert-warning alert-dismissible" role="alert">当前没有参与的会议</div>');
     }
-
+    var nowTime = new Date().Format('yyyy-MM-dd hh:mm:ss');
     for (i in list.meetings) {
       list.meetings[i].class = 'default';
       list.meetings[i].state = '未开始';
-      if (comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list.meetings[i].endDate) <= 0) {
+      if (comptime(nowTime, list.meetings[i].endDate) <= 0) {
         list.meetings[i].class = 'success';
         list.meetings[i].state = '已完成';
       }
-      if (comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list.meetings[i].startDate) <= 0 &&
-        comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list.meetings[i].endDate) >= 0) {
+      if (comptime(nowTime, list.meetings[i].startDate) <= 0 &&
+        comptime(nowTime, list.meetings[i].endDate) >= 0) {
         list.meetings[i].class = 'warning';
         list.meetings[i].state = '进行中';
       }
@@ -478,18 +484,12 @@ function getList() {
     for (i in list2.meetings) {
       list2.meetings[i].class = 'default';
       list2.meetings[i].state = '未开始';
-      if (comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list2.meetings[i].endDate) <= 0) {
+      if (comptime(nowTime, list2.meetings[i].endDate) <= 0) {
         list2.meetings[i].class = 'success';
         list2.meetings[i].state = '已完成';
       }
-      if (comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list2.meetings[i].startDate) <= 0 &&
-        comptime(
-          new Date().Format('yyyy-MM-dd hh:mm:ss'),
-          list2.meetings[i].endDate) >= 0) {
+      if (comptime(nowTime, list2.meetings[i].startDate) <= 0 &&
+        comptime(nowTime, list2.meetings[i].endDate) >= 0) {
         list2.meetings[i].class = 'warning';
         list2.meetings[i].state = '进行中';
       }

@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 app.post('/login', [userModule.isEmailStr], (req, res, next) => { //用户是否存在
   console.log('User Login:');
   var sqlCmd =
-    'SELECT `id`, `name`, `password`, `detail`, `web`, `tureEmail`, `verify` FROM `user` WHERE `email`=\'' +
+    'SELECT `id`, `name`, `password`, `detail`, `phone`, `web`, `tureEmail`, `verify` FROM `user` WHERE `email`=\'' +
     req.body.userEmail + '\'';
   sqlModule.query(sqlCmd, (vals, isNull) => {
     if (isNull) {
@@ -84,7 +84,8 @@ app.post('/login', [userModule.isEmailStr], (req, res, next) => { //用户是否
             detail: res.locals.userData.detail,
             web: res.locals.userData.web,
             tureEmail: res.locals.userData.tureEmail,
-            verify: res.locals.userData.verify
+            verify: res.locals.userData.verify,
+            phone: res.locals.userData.phone
           });
         });
       });
@@ -253,7 +254,7 @@ app.post('/user/info', [userModule.appUserVerif, userModule.isTrueUser], (req, r
   if (req.body.verify == 'true') verify = 0;
   console.log(req.body.verify);
   var sqlCmd = 'UPDATE `user` SET  `detail`=\'' + userDetail +
-    '\',`web`=\'' + userWeb + '\', `verify`=' + verify +
+    '\',`web`=\'' + userWeb + '\',`phone`=\'' + req.body.phone + '\', `verify`=' + verify +
     ' WHERE `id`=' + res.locals.data.userID;
   sqlModule.query(sqlCmd);
   console.log('Update user Info!');

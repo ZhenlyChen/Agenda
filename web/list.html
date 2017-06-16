@@ -266,7 +266,7 @@
             var isLogin = getCookie("isLogin");
             var cook_isMail = getCookie("tureEmail");
             if (isLogin == 0 || isLogin == '' || isLogin == undefined) {
-                //window.location.href = 'index.html?op=1';
+                window.location.href = 'index.html?op=1';
             } else if (cook_isMail == '0' || cook_isMail == undefined || cook_isMail == "") {
                 window.location.href = 'mail.html';
             }
@@ -295,17 +295,7 @@
         var myNotice = new Vue({
             el: '#cNotice',
             data: {
-                notices: [{
-                    data: "今天没有会议",
-                    id: 6,
-                    man: "zhenly",
-                    time: "2017-06-16 11:10:59"
-                }, {
-                    data: "今天没有会议",
-                    id: 6,
-                    man: "zhenly",
-                    time: "2017-06-16 11:10:59"
-                }]
+                notices: []
             }
         });
         $('.form_datetime').datetimepicker({

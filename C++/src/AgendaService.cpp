@@ -112,6 +112,9 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
     return false;  // user isn't exist
   }
 
+  if(participator.empty())
+    return false;
+
   std::list<Meeting> tmp = m_storage->queryMeeting([&title](const Meeting &meeting)->bool {
     return (meeting.getTitle() == title);
   });
@@ -193,7 +196,7 @@ const std::string &title, const std::string &participator) {
   if(addto.empty())return false;  // no this meeting
 
   Meeting thisMeeting = addto.front();
-  std::list<Meeting> aboutme = 
+  std::list<Meeting> aboutme =
     m_storage->queryMeeting([&participator, &thisMeeting](const Meeting &meeting)->bool {
     if ((meeting.getSponsor() != participator) && !meeting.isParticipator(participator)) return false;
     return !(meeting.getStartDate() >= thisMeeting.getEndDate() || meeting.getEndDate() <= thisMeeting.getStartDate());
@@ -288,7 +291,7 @@ const std::string &startDate, const std::string &endDate) const{
     if (meeting.getSponsor() != userName && !meeting.isParticipator(userName)) return false;  // user isn't sponor
     Date m_startDate(startDate);
     Date m_endDate(endDate);
-    if (!Date::isValid(m_startDate) || !Date::isValid(m_startDate) || m_startDate > m_endDate) 
+    if (!Date::isValid(m_startDate) || !Date::isValid(m_startDate) || m_startDate > m_endDate)
       return false;
     return !(meeting.getStartDate() > m_endDate || meeting.getEndDate() < m_startDate);
   });
