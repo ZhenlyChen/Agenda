@@ -193,9 +193,6 @@ function login() {
     return;
   if (isNullTest('userPassword', '<strong>密码为空</strong>  请输入密码'))
     return;
-  var pattern =
-    /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-  if (!regularTest(pattern, 'userEmail', '请输入有效的Email！')) return;
   sendNotice('登陆中，请稍后');
   $.post(
     'api/login', {
@@ -211,8 +208,7 @@ function login() {
         document.cookie = 'tureEmail=' + data.tureEmail;
         document.cookie = 'verify=' + data.verify;
         document.cookie = 'phone=' + data.phone;
-        document.cookie =
-          'userEmail=' + document.getElementById('userEmail').value;
+        document.cookie = 'userEmail=' + data.email;
         if (data.tureEmail == 0) {
           window.location.href = 'mail.html';
         } else {
@@ -223,7 +219,7 @@ function login() {
           case 'ERROR_USER':
             $('#userEmail').val('');
             $('#userEmail').focus();
-            sendNotice('<strong>邮箱不存在</strong>请重新输入或进行注册');
+            sendNotice('<strong>邮箱/用户名</strong>不存在，请重新输入或进行注册');
             break;
           case 'ERROR_PASSWORD':
             $('#userPassword').val('');
@@ -264,6 +260,9 @@ function register() {
         window.location.href = 'index.html?op=5';
       } else if (data.why == 'EMAIL_HAD') {
         sendNotice('邮箱已经被注册，请登陆。');
+      } else if (data.why == 'NAME_HAD') {
+        sendNotice('用户名已经被注册，请修改。');
+        $('#userName').focus();
       } else {
         sendNotice('非法请求');
       }

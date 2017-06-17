@@ -2,114 +2,113 @@
 <html lang="zh-CN">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="theme-color" content="#f8f8f8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agenda</title>
-  <!-- Bootstrap -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="shortcut icon" href="agenda.ico">
-  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="js/agenda.js"></script>
-  <style type="text/css">
-    body {
-      padding-top: 70px;
-      background-color: #EEE;
-    }
-  </style>
-  <script type="text/javascript">
-    $(function() {
-      var temp = getQueryString('op');
-      switch(temp)
-      {
-        case '0':
-        sendNotice("请重新登陆");
-        break;
-        case '1':
-        sendNotice("请登陆后再操作");
-        break;
-        case '2':
-        sendNotice("邮件发送成功，请点击邮件里链接进行激活后再登陆");
-        break;
-        case '3':
-        sendNotice('登陆已过时，请重新登陆！');
-        break;
-        case '4':
-        sendNotice('非法访问，请重新登陆！');
-        break;
-        case '5':
-        sendNotice('注册成功！请登陆你的账号。');
-        break;
-        case '6':
-        sendNotice('重置密码成功，请登陆你的账号。');
-        break;
-        case null:
-        $("#logindiv").hide();
-        $("#other").hide();
-        break;
-      }
-      if(temp != null){
-        document.cookie = "isLogin=0";
-        document.cookie = "name=";
-      $("#userEmail").focus();
-      }
-      var isLogin = getCookie("isLogin");
-      if (isLogin == 0 || isLogin == '' || isLogin == undefined) {
-        $("#logindiv").show();
-        $("#other").show();
-        $("#userEmail").focus();
-      }
-      loadBar("#t-home"); //加载标题栏
-      $('#userPassword').on('keypress', function(event) {
-        if (event.keyCode == 13) {
-          toLogin();
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#f8f8f8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agenda</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="agenda.ico">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/agenda.js"></script>
+    <style type="text/css">
+        body {
+            padding-top: 70px;
+            background-color: #EEE;
         }
-      }); //绑定回车事件
-    });
-  </script>
+    </style>
+    <script type="text/javascript">
+        $(function() {
+            var temp = getQueryString('op');
+            switch (temp) {
+                case '0':
+                    sendNotice("请重新登陆");
+                    break;
+                case '1':
+                    sendNotice("请登陆后再操作");
+                    break;
+                case '2':
+                    sendNotice("邮件发送成功，请点击邮件里链接进行激活后再登陆");
+                    break;
+                case '3':
+                    sendNotice('登陆已过时，请重新登陆！');
+                    break;
+                case '4':
+                    sendNotice('非法访问，请重新登陆！');
+                    break;
+                case '5':
+                    sendNotice('注册成功！请登陆你的账号。');
+                    break;
+                case '6':
+                    sendNotice('重置密码成功，请登陆你的账号。');
+                    break;
+                case null:
+                    $("#logindiv").hide();
+                    $("#other").hide();
+                    break;
+            }
+            if (temp != null) {
+                document.cookie = "isLogin=0";
+                document.cookie = "name=";
+                $("#userEmail").focus();
+            }
+            var isLogin = getCookie("isLogin");
+            if (isLogin == 0 || isLogin == '' || isLogin == undefined) {
+                $("#logindiv").show();
+                $("#other").show();
+                $("#userEmail").focus();
+            }
+            loadBar("#t-home"); //加载标题栏
+            $('#userPassword').on('keypress', function(event) {
+                if (event.keyCode == 13) {
+                    toLogin();
+                }
+            }); //绑定回车事件
+        });
+    </script>
 </head>
 
 <body>
 
-  <div id="nav-bar"></div>
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="col-md-6  col-md-offset-3" style="padding-top:5%;">
-        <div class="jumbotron" style="background: #F8F8F8;">
-          <div class="container">
-            <div class="text-center">
-              <h1>Agenda</h1>
-              <p>Conference management system</p>
-              <br>
-            </div>
-            <div id="logindiv" class="col-md-10  col-md-offset-1">
-              <div id="notice"></div>
-              <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-addon glyphicon glyphicon-user"></span>
-                  <input type="text" id="userEmail" class="form-control" id="exampleInputEmail1" placeholder="Email" aria-describedby="inputGroupSuccess1Status">
+    <div id="nav-bar"></div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-6  col-md-offset-3" style="padding-top:5%;">
+                <div class="jumbotron" style="background: #F8F8F8;">
+                    <div class="container">
+                        <div class="text-center">
+                            <h1>Agenda</h1>
+                            <p>Conference management system</p>
+                            <br>
+                        </div>
+                        <div id="logindiv" class="col-md-10  col-md-offset-1">
+                            <div id="notice"></div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon glyphicon glyphicon-user"></span>
+                                    <input type="text" id="userEmail" class="form-control" id="exampleInputEmail1" placeholder="Email/Username" aria-describedby="inputGroupSuccess1Status">
+                                </div>
+                            </div>
+                            <div class="form-group" id="password_div">
+                                <div class="input-group">
+                                    <span class="input-group-addon glyphicon glyphicon-console"></span>
+                                    <input type="password" id="userPassword" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                    <a class="input-group-addon" href="forget.html"><span class=" glyphicon glyphicon-question-sign"></span></a>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-6  col-md-offset-3">
+                                <button type="submit" class="btn btn-success btn-block" onclick="login()">Login</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="form-group" id="password_div">
-                <div class="input-group">
-                  <span class="input-group-addon glyphicon glyphicon-console"></span>
-                  <input type="password" id="userPassword" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                  <a class="input-group-addon" href="forget.html"><span class=" glyphicon glyphicon-question-sign"></span></a>
-                </div>
-              </div>
-              <br>
-              <div class="col-md-6  col-md-offset-3">
-                <button type="submit" class="btn btn-success btn-block" onclick="login()">Login</button>
-              </div>
+                <div id="other" class="text-center" style="font-size:16px;"><a href="register.html">Register</a> | <a href="about.html">About</a></div>
             </div>
-          </div>
         </div>
-        <div id="other" class="text-center" style="font-size:16px;"><a href="register.html">Register</a> | <a href="about.html">About</a></div>
-      </div>
     </div>
-  </div>
 </body>
 
 </html>

@@ -112,8 +112,9 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
     return false;  // user isn't exist
   }
 
-  if(participator.empty())
+  if(participator.empty()){
     return false;
+  }
 
   std::list<Meeting> tmp = m_storage->queryMeeting([&title](const Meeting &meeting)->bool {
     return (meeting.getTitle() == title);
@@ -288,7 +289,7 @@ std::list<Meeting> AgendaService::meetingQuery(const std::string &userName,
 const std::string &startDate, const std::string &endDate) const{
 
   return m_storage->queryMeeting([&userName, &startDate, &endDate](const Meeting &meeting)->bool {
-    if (meeting.getSponsor() != userName && !meeting.isParticipator(userName)) return false;  // user isn't sponor
+    if (meeting.getSponsor() != userName && !meeting.isParticipator(userName)) return false;  // user isn't sponsor
     Date m_startDate(startDate);
     Date m_endDate(endDate);
     if (!Date::isValid(m_startDate) || !Date::isValid(m_startDate) || m_startDate > m_endDate)

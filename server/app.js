@@ -49,11 +49,17 @@ app.use((req, res, next) => {
 });
 //------------------------------------------------------------------------------
 //用户登录模块
-app.post('/login', [userModule.isEmailStr], (req, res, next) => { //用户是否存在
+app.post('/login', (req, res, next) => { //用户是否存在
   console.log('User Login:');
-  var sqlCmd =
-    'SELECT `id`, `name`, `password`, `detail`, `phone`, `web`, `tureEmail`, `verify` FROM `user` WHERE `email`=\'' +
-    req.body.userEmail + '\'';
+  var sqlCmd = new String;
+  console.log(req.body.userEmail.indexOf('@'));
+  if (req.body.userEmail.indexOf('@') == -1) {
+    sqlCmd = 'SELECT `id`, `name`, `email`, `password`, `detail`, `phone`, `web`, `tureEmail`, `verify` FROM `user` WHERE `name`=\'' +
+      req.body.userEmail + '\'';
+  } else {
+    sqlCmd = 'SELECT `id`, `name`, `email`, `password`, `detail`, `phone`, `web`, `tureEmail`, `verify` FROM `user` WHERE `email`=\'' +
+      req.body.userEmail + '\'';
+  }
   sqlModule.query(sqlCmd, (vals, isNull) => {
     if (isNull) {
       console.log('ERR: user is not exist.');
@@ -81,6 +87,7 @@ app.post('/login', [userModule.isEmailStr], (req, res, next) => { //用户是否
           res.send({
             state: 'success',
             name: res.locals.userData.name,
+            email: res.locals.userData.email,
             detail: res.locals.userData.detail,
             web: res.locals.userData.web,
             tureEmail: res.locals.userData.tureEmail,
@@ -114,7 +121,7 @@ app.get('/login', (req, res, next) => { //获取get参数
   sqlModule.query(sqlCmd, (vals, isNull) => {
     if (vals[0].tureEmail == 0) {
       console.log('Email activation success');
-      var sqlCmd = 'UPDATE `user` SET `tureEmail`=1 `verify`=1 WHERE id=' +
+      var sqlCmd = 'UPDATE `user` SET `tureEmail`=1, `verify`=1 WHERE id=' +
         res.locals.data.userID;
       sqlModule.query(sqlCmd, (vals, isNull) => {
         res.redirect('../index.html?op=0');
@@ -395,7 +402,10 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   var sqlCmd = 'SELECT * FROM `meeting` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
     res.locals.meetings = vals;
-    if (userModule.comptime(req.body.startDate, req.body.endDate) <= 0) { // 日期合法性检测
+    if (meetModule.CheckDateTime(req.body.startDate) == false ||
+      meetModule.CheckDateTime(req.body.endDate) == false ||
+      userModule.comptime(req.body.startDate, req.body.endDate) <= 0
+    ) { // 日期合法性检测
       res.send({ state: 'failed', why: 'DATE_NO' });
       console.log('ERR: DATE_NO');
       next('route');

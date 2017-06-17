@@ -6,5 +6,12 @@ done:
 通知系统 // 待完善
 封装makesign  // later
 
+
 todo:
 单独邮件验证tkoen
+
+2017/6/17
+done:
+完善日期格式验证
+用户名也可以登陆
+修复若干BUG
