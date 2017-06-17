@@ -145,7 +145,7 @@
         </div>
     </div>
 
-    <div id='sureQuit' class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div id="sureQuit" class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <fieldset>
@@ -165,7 +165,7 @@
         </div>
     </div>
 
-    <div id='sureDel' class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div id="sureDel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <fieldset>
@@ -195,47 +195,45 @@
                     </div>
                     <div class="modal-body col-md-offset-1 col-md-10">
                         <div id="notice2"></div>
-                        <form>
-                            <div class="form-group">
-                                <label class="control-label">名称:</label>
-                                <input id="meetName" class="form-control">
+                        <div class="form-group">
+                            <label class="control-label">名称:</label>
+                            <input id="meetName" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">会议详情:</label>
+                            <input id="input_detail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">开始时间：</label>
+                            <div class="input-group date form_datetime col-md-5" data-date-format="dd-MM-yyyy HH:ii:00" data-link-field="dtp_input1">
+                                <input id="input_startDate" class="form-control" size="16" type="text" value="" readonly>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">会议详情:</label>
-                                <input id="input_detail" class="form-control">
+                            <input type="hidden" value="" /><br/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">结束时间：</label>
+                            <div class="input-group date form_datetime col-md-5" data-date-format="dd-MM-yyyy HH:ii:00" data-link-field="dtp_input1">
+                                <input id="input_endDate" class="form-control" size="16" type="text" value="" readonly>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">开始时间：</label>
-                                <div class="input-group date form_datetime col-md-5" data-date-format="dd-MM-yyyy HH:ii:00" data-link-field="dtp_input1">
-                                    <input id="input_startDate" class="form-control" size="16" type="text" value="" readonly>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                                </div>
-                                <input type="hidden" value="" /><br/>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">结束时间：</label>
-                                <div class="input-group date form_datetime col-md-5" data-date-format="dd-MM-yyyy HH:ii:00" data-link-field="dtp_input1">
-                                    <input id="input_endDate" class="form-control" size="16" type="text" value="" readonly>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                                </div>
-                                <input type="hidden" value="" /><br/>
-                            </div>
-                            <div class="form-group" id="usercheck">
-                                <label class="control-label">参与者：</label>
-                                <div>
-                                    <label class="checkbox-inline" v-for="(user,index) in users">
+                            <input type="hidden" value="" /><br/>
+                        </div>
+                        <div class="form-group" id="usercheck">
+                            <label class="control-label">参与者：</label>
+                            <div>
+                                <label class="checkbox-inline" v-for="(user,index) in users">
                                     <input type="checkbox" name="input_user" :value="user.name"> {{user.name}}
                                 </label>
-                                </div>
                             </div>
+                        </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                <button data-mid="1" id="sendMeeting" value="addMeeting" type="button" class="btn btn-primary" onclick="dealMeeting(this)">确定</button>
-                            </div>
-                            </from>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button data-mid="1" id="sendMeeting" value="addMeeting" type="button" class="btn btn-primary" onclick="dealMeeting(this)">确定</button>
+                        </div>
                     </div>
                 </fieldset>
             </div>

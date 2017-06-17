@@ -1,69 +1,74 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="theme-color" content="#f8f8f8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agenda</title>
-  <!-- Bootstrap -->
-  <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="shortcut icon" href="agenda.ico">
-  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="js/agenda.js"></script>
-  <style type="text/css">
-    body { padding-top: 70px;
-      background-color: #EEEEEE;}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#f8f8f8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agenda</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="agenda.ico">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/agenda.js"></script>
+    <style type="text/css">
+        body {
+            padding-top: 70px;
+            background-color: #EEEEEE;
+        }
     </style>
     <script type="text/javascript">
-      var countdown=120;
-      $(function() {
-        loadBar("#t-home");
-        $("#userEmail").focus();
-      });//处理标题栏
+        var countdown = 120;
+        $(function() {
+            loadBar("#t-home");
+            $("#userEmail").focus();
+        }); //处理标题栏
     </script>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="nav-bar"></div>
     <br>
     <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="jumbotron col-md-6  col-md-offset-3" style="background: #F8F8F8;">
-           <div class="container">
-             <h1 style="font-size: 30px;">Forget | 重置密码</h1>
-             <br>
-             <div id="notice"></div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="jumbotron col-md-6  col-md-offset-3" style="background: #F8F8F8;">
+                    <div class="container">
+                        <h1 style="font-size: 30px;">Forget | 重置密码</h1>
+                        <br>
+                        <div id="notice"></div>
 
-             <div class="form-group">
-              <label for="exampleInputEmail1">电子邮箱</label>
-              <input type="email" id="userEmail" class="form-control" id="exampleInputEmail1" placeholder="Email">
-            </div>
-            <div class="form-group input-group">
-              <label for="exampleInputEmail1">验证码</label>
-              <input type="name" id="vCode" class="form-control" id="exampleInputEmail1" placeholder="Verification Code">
-              <span class="input-group-btn">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">电子邮箱</label>
+                            <input type="email" id="userEmail" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="form-group input-group">
+                            <label for="exampleInputEmail1">验证码</label>
+                            <input type="name" id="vCode" class="form-control" placeholder="Verification Code">
+                            <span class="input-group-btn">
                 <button class="btn btn-success" type="button" id="gCode" onclick="getCode()">获取验证码</button>
               </span>
-            </div>
-            <div class="form-group" id="password_div">
-              <label id="password_state" for="exampleInputPassword1">新密码</label>
-              <input type="password" id="userPassword" class="form-control" placeholder="Password">
-            </div>
-            <div class="form-group" id="password_div">
-              <label id="password_state" for="exampleInputPassword1">再输入一次密码</label>
-              <input type="password" id="userPassword2" class="form-control" placeholder="Password">
-            </div>
-            <br>
-            <div class="col-md-2 col-md-offset-10"><button type="submit" class="btn btn-info" onclick="forgetPwd()">重置密码</button></div>
-          </div>
-        </div>
+                        </div>
+                        <div class="form-group" id="password_div">
+                            <label id="password_state" for="exampleInputPassword1">新密码</label>
+                            <input type="password" id="userPassword" class="form-control" placeholder="Password">
+                        </div>
+                        <div class="form-group" id="password2_div">
+                            <label id="password2_state" for="exampleInputPassword1">再输入一次密码</label>
+                            <input type="password" id="userPassword2" class="form-control" placeholder="Password">
+                        </div>
+                        <br>
+                        <div class="col-md-2 col-md-offset-10"><button type="submit" class="btn btn-info" onclick="forgetPwd()">重置密码</button></div>
+                    </div>
+                </div>
 
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 
 </body>
+
 </html>
