@@ -5,7 +5,7 @@ const crypto = require('crypto'); //加密模块
 const spawn = require('child_process').spawn; //异步子进程模块
 const fs = require('fs'); //文件处理
 const cookieParser = require('cookie-parser'); // cookie模块
-const urlencodedParser = bodyParser.urlencoded({ extended: false }) // post模块
+const urlencodedParser = bodyParser.urlencoded({ extended: false }); // post模块
 const sqlModule = require('./mysql.js'); //数据库模块
 const userModule = require('./user.js'); //用户认证模块
 const meetModule = require('./meeting.js'); //用户认证模块
@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 //用户登录模块
 app.post('/login', (req, res, next) => { //用户是否存在
   console.log('User Login:');
-  var sqlCmd = new String;
+  var sqlCmd;
   console.log(req.body.userEmail.indexOf('@'));
   if (req.body.userEmail.indexOf('@') == -1) {
     sqlCmd = 'SELECT `id`, `name`, `email`, `password`, `detail`, `phone`, `web`, `tureEmail`, `verify` FROM `user` WHERE `name`=\'' +
@@ -106,7 +106,7 @@ app.post('/login', (req, res, next) => { //用户是否存在
 //邮箱验证系统
 app.get('/login', (req, res, next) => { //获取get参数
   console.log('Email activation:');
-  if (req.query.userSession != undefined && req.query.sign != undefined) {
+  if (req.query.userSession !== undefined && req.query.sign !== undefined) {
     res.locals.userSession = req.query.userSession;
     res.locals.sign = req.query.sign;
     next();
@@ -119,7 +119,7 @@ app.get('/login', (req, res, next) => { //获取get参数
   var sqlCmd =
     'SELECT `tureEmail` FROM `user` WHERE id=' + res.locals.data.userID;
   sqlModule.query(sqlCmd, (vals, isNull) => {
-    if (vals[0].tureEmail == 0) {
+    if (vals[0].tureEmail === 0) {
       console.log('Email activation success');
       var sqlCmd = 'UPDATE `user` SET `tureEmail`=1, `verify`=1 WHERE id=' +
         res.locals.data.userID;
@@ -196,7 +196,7 @@ app.post('/mail', (req, res, next) => { // 获取授权参数
     'SELECT `email`, `tureEmail`, `sendEmailTime` FROM `user` WHERE `id`=' +
     res.locals.data.userID;
   sqlModule.query(sqlCmd, (vals, isNull) => {
-    if (vals[0].sendEmailTime != nowHour && vals[0].tureEmail == 0) {
+    if (vals[0].sendEmailTime != nowHour && vals[0].tureEmail === 0) {
       console.log('ready to Send email!');
       var sqlCmd = 'UPDATE `user` SET `sendEmailTime`=\'' + nowHour +
         '\' WHERE `id`=' + res.locals.data.userID;
@@ -316,7 +316,7 @@ app.post('/forget', (req, res, next) => { //核对验证码
       res.send({ state: 'failed', why: 'EMAIL_NOT' });
       next('route');
     } else {
-      if (vals[0].vCode == req.body.vCode && vals[0].vCode != 007 &&
+      if (vals[0].vCode == req.body.vCode && vals[0].vCode != '007' &&
         userModule.comptime(vals[0].vCodeLimitTime, nowTime) < 1) {
         res.locals.userId = vals[0].id;
         next();
@@ -355,9 +355,9 @@ app.post('/getList', [userModule.appUserVerif], (req, res, next) => {
 }, (req, res, next) => {
   var sqlCmd = 'SELECT `name`, `verify` FROM `user` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
-    var userList = new Array;
-    for (i in vals) {
-      if (vals[i].name != res.locals.userName && vals[i].verify != 0)
+    var userList = new Array([]);
+    for (var i in vals) {
+      if (vals[i].name != res.locals.userName && vals[i].verify !== 0)
         userList.push(vals[i]);
     }
     meetModule.refreshList(res, (listOfS, listOfP) => {
@@ -402,8 +402,8 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   var sqlCmd = 'SELECT * FROM `meeting` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
     res.locals.meetings = vals;
-    if (meetModule.CheckDateTime(req.body.startDate) == false ||
-      meetModule.CheckDateTime(req.body.endDate) == false ||
+    if (meetModule.CheckDateTime(req.body.startDate) === false ||
+      meetModule.CheckDateTime(req.body.endDate) === false ||
       userModule.comptime(req.body.startDate, req.body.endDate) <= 0
     ) { // 日期合法性检测
       res.send({ state: 'failed', why: 'DATE_NO' });
@@ -417,23 +417,23 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   var actorsList = req.body.actors.split(',');
   var sqlCmd = 'SELECT `name`, `verify` FROM `user` WHERE 1';
   sqlModule.query(sqlCmd, (vals, isNull) => {
-    var trueUser = new Array;
-    for (i in actorsList) {
+    var trueUser = new Array([]);
+    for (var i in actorsList) {
       if (res.locals.userName == actorsList[i]) { // 发起者和参与者重名检测
         res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
         next('route');
         return;
       }
       var flag = 0; // 参与者是否存在
-      for (j in vals) {
+      for (var j in vals) {
         if (vals[j].name == actorsList[i] && vals[j].verify == 1) flag = 1;
       }
-      if (flag == 0) {
+      if (flag === 0) {
         res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
         next('route');
         return;
       }
-      for (k in trueUser) { // 参与者重名检测
+      for (var k in trueUser) { // 参与者重名检测
         if (trueUser[k] == actorsList[i]) {
           res.send({ state: 'failed', why: 'ILLEGAL_INPUT' });
           next('route');
@@ -445,7 +445,7 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   });
   next();
 }, (req, res, next) => { // 重名会议检测
-  for (i in res.locals.meetings) {
+  for (var i in res.locals.meetings) {
     if (req.body.name == res.locals.meetings[i].name && req.body.mid != res.locals.meetings[i].mid) {
       res.send({ state: 'failed', why: 'HAD_MEETING' });
       console.log('ERR: HAD_MEETING');
@@ -455,12 +455,12 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   }
   next();
 }, (req, res, next) => { // 时间冲突检测
-  for (i in res.locals.meetings) {
+  for (var i in res.locals.meetings) {
     var actorsList = res.locals.meetings[i].actors.split(','); // 这个会议的参与者
     var actorsIn = req.body.actors.split(','); // 新建会议的参与者
     actorsIn.push(res.locals.userName);
-    for (ai in actorsIn) {
-      for (al in actorsList) {
+    for (var ai in actorsIn) {
+      for (var al in actorsList) {
         if ((actorsIn[ai] == actorsList[al] || actorsIn[ai] == res.locals.meetings[i].name) &&
           req.body.mid != res.locals.meetings[i].mid) { // 这个参与者在这个会议里面
           if (!(userModule.comptime(req.body.startDate, res.locals.meetings[i].endDate) <= 0 ||
@@ -476,7 +476,7 @@ app.post('/editMeeting', [userModule.appUserVerif], (req, res, next) => { // 获
   }
   next();
 }, (req, res, next) => {
-  if (req.body.mid != 0) {
+  if (req.body.mid !== 0) {
     sqlCmd = 'UPDATE `meeting` SET `name`=\'' + req.body.name +
       '\',`startDate`=\'' + req.body.startDate + '\',`endDate`=\'' +
       req.body.endDate + '\',`actors`=\'' + req.body.actors +
@@ -515,10 +515,10 @@ app.post('/quitMeeting', [userModule.appUserVerif], (req, res, next) => {
     sqlModule.query(sqlCmd, (vals, isNull) => {
       var actors = vals[0].actors.split(',');
       var newActors = '';
-      for (i in actors) {
+      for (var i in actors) {
         if (actors[i] != res.locals.userName) {
-          if (newActors != '') newActors += ',';
-          newActors += actors[i]
+          if (newActors !== '') newActors += ',';
+          newActors += actors[i];
         }
       }
       res.locals.actors = newActors;
@@ -526,7 +526,7 @@ app.post('/quitMeeting', [userModule.appUserVerif], (req, res, next) => {
     });
   },
   (req, res, next) => {
-    if (res.locals.actors == '') {
+    if (res.locals.actors === '') {
       sqlCmd = 'DELETE FROM `meeting` WHERE `mid`=' + req.body.mid;
     } else {
       sqlCmd = 'UPDATE `meeting` SET `actors`=\'' + res.locals.actors +
