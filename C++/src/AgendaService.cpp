@@ -125,7 +125,7 @@ bool AgendaService::createMeeting(const std::string &userName, const std::string
 
   Date m_startDate(startDate);
   Date m_endDate(endDate);
-  if (!Date::isValid(m_startDate) || !Date::isValid(m_startDate) || m_startDate >= m_endDate) {
+  if (!Date::isValid(m_startDate) || !Date::isValid(m_endDate) || m_startDate >= m_endDate) {
     return false;  // std::cout << "[create meeting] The date isn't valid."<< std::endl;
   }
 
@@ -292,7 +292,7 @@ const std::string &startDate, const std::string &endDate) const{
     if (meeting.getSponsor() != userName && !meeting.isParticipator(userName)) return false;  // user isn't sponsor
     Date m_startDate(startDate);
     Date m_endDate(endDate);
-    if (!Date::isValid(m_startDate) || !Date::isValid(m_startDate) || m_startDate > m_endDate)
+    if (!Date::isValid(m_startDate) || !Date::isValid(m_endDate) || m_startDate > m_endDate)
       return false;
     return !(meeting.getStartDate() > m_endDate || meeting.getEndDate() < m_startDate);
   });
